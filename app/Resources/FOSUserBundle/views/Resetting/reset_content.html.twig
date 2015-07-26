@@ -1,0 +1,52 @@
+{{ include ("alert.html.twig") }}
+{% set alertId = "lengthTooShortAlert" %}
+{% set alertType = "danger" %}
+{% set alertContent = "The length of the password has to be at least 6 characters" %}
+{{ include ("alert.html.twig") }}
+{% set alertId = "PasswordsDontMatchAlert" %}
+{% set alertContent = "Passwords do not match" %}
+{{ include ("alert.html.twig") }}
+<form action="{{ path('fos_user_resetting_reset', {'token': token}) }}" {{ form_enctype(form) }} method="POST" class="fos_user_resetting_reset">
+    <div style = "line-height:8px">
+	    {{ form_widget(form) }}
+	    <br/>
+	    <div>
+	        <input type="submit" value="{{ 'resetting.reset.submit'|trans({}, 'FOSUserBundle') }}" class = "btn btn-primary" />
+	    </div>
+    </div>
+</form>
+<script>
+$( document ).ready(function() 
+{
+  $(".required").html("<br/>");
+  $("#fos_user_resetting_form_new_first").attr("class","form-control");
+  $("#fos_user_resetting_form_new_first").attr("placeholder","NEW PASSWORD");
+  $("#fos_user_resetting_form_new_second").attr("class","form-control");
+  $("#fos_user_resetting_form_new_second").attr("placeholder","VERIFY PASSWORD");
+  $( ".fos_user_resetting_reset" ).submit(function( event )
+  {
+      event.preventDefault();
+      var failed = false;
+      if ($("#fos_user_resetting_form_new_first").val().length < 6  )
+      {
+	      showalert("lengthTooShortAlert");
+	      failed = true;
+      }
+      if ($("#fos_user_resetting_form_new_first").val() != $("#fos_user_resetting_form_new_second").val())
+      {
+      	showalert("PasswordsDontMatchAlert");
+      	failed = true;
+      }
+      if (!failed)
+      {
+	  	  page = "{{ path('fos_user_resetting_reset', {'token': token}) }}";
+		  querystring = $( this ).serialize();
+		  $.post(page, querystring).done(function(data) 
+		  {
+		  	showalert();
+		  	setTimeout(function(){ redirectTo("{{ path('_index') }}") }, 1000);
+		  });
+      }
+  });
+});
+</script>

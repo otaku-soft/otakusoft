@@ -1,0 +1,87 @@
+
+<li class="list-group-item">
+
+  <!-- total records -->
+  <span style = "display:{% block totalrows %}block{% endblock %}">
+   <h4><span id = "{{ options.listname }}totalrows"></span>
+    {{ options.datatype }}</h4>
+  </span>
+
+  <div class="row">
+
+    <!-- current page number and total pages -->
+    <div class="col-md-3" style = "display:{% block pagenumber %}block{% endblock %}">
+      <!-- current page number and total pages -->
+      Pagenumber: <span id = "{{ options.listname }}currentpagenumber">1</span> of <span id = "{{ options.listname }}totalpages"></span>
+    </div>
+
+    <!-- current page number and total pages -->
+    <div class="col-md-3" style = "display:{% block resultsperpage %}block{% endblock %}">
+      <!-- results per page -->
+       Results per Page
+      <select   id = "{{ options.listname }}maxresults" onchange = "newsearch('{{ options.table }}','{{ options.listname }}','{{ options.templatename }}','reload')" >
+        {% for item in options.resultsperpage %}  
+          <option value = "{{ item }}">{{ item }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+     <!-- filter by letter -->
+    <div class="col-md-3" style = "display:{% block filterbyletter %}block{% endblock %}">
+      Filter by letter
+      <select  id = "{{ options.listname }}selectedletter" onchange = "newsearch('{{ options.table }}','{{ options.listname }}','{{ options.templatename }}','reload')" >
+        <option value = ""></option>
+        {% for item in options.filterby %}
+          <option value = "{{ item }}">
+            {{ item }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- sort by -->
+    <div class="col-md-3" style = "display:{% block sortby %}block{% endblock %}">
+      <!-- Sort by -->
+      Sort by
+      <select id = "{{ options.listname }}searchtype" onchange = "newsearch('{{ options.table }}','{{ options.listname }}','{{ options.templatename }}','reload');{% block extraselectfunctions %}{% endblock %}">
+        {% for item in options.searchoptions %}  
+          <option value = "{{ item.value }}">{{ item.description }}</option>
+        {% endfor %}
+      </select> 
+    </div>
+    
+  </div>
+
+   <!-- search text field -->
+  <div style = "display:{% block searchform %}block{% endblock %};">
+    <div class="input-group" >
+      <span class="input-group-addon"  style = "cursor:pointer" onclick = "newsearch('{{ options.table }}','{{ options.listname }}','{{ options.templatename }}')">
+        <span class="glyphicon glyphicon-search"></span>
+      </span>
+      <input type = "text" class="form-control" id = "{{ options.listname }}search" value = "" onkeyup = "if (event.keyCode == 13)newsearch('{{ options.table }}','{{ options.listname }}','{{ options.templatename }}')" />
+    </div>
+  </div>
+
+ 
+  <span style = "display:{% block navigators %}block{% endblock %};padding-top:5px">
+    <div class="btn-group">
+      <button type="button" class="btn btn-default" onclick = "searchformprev('{{ options.table }}','{{ options.listname }}','{{ options.templatename }}','reload');"  id = "{{ options.listname }}previous">Previous</button>
+      <button type="button" class="btn btn-default" onclick = "searchformnext('{{ options.table }}','{{ options.listname }}','{{ options.templatename }}','reload');">Next</button>
+    </div>
+  </span>
+
+  <!-- extra parameters called by child template -->
+  {% block extraparamemters %}{% endblock %}
+
+  <!-- where the search results get returned -->
+
+  <img src = "/images/alpha.png" onload = "newsearch('{{ options.table }}','{{ options.listname }}','{{ options.templatename }}','reload')" style = "width:100%;height:1px">
+  <ul id = "{{ options.listname }}" class="list-group"></ul>
+
+  <!-- extra hidden input fied variables to make search work -->
+
+  <input type = "text" id = "{{ options.listname }}searchtypes" value = "{{ options.searchtypes }}" style = "display:none"/>
+  <input type = "text" id = "{{ options.listname }}findby" value = "{{ options.findby }}" style = "display:none"/>
+  <input type = "text" id = "{{ options.listname }}findbyvalue" value = "{{ options.findbyvalue }}" style = "display:none"/>
+
+</li>

@@ -1,0 +1,19 @@
+{%  if showAlert is not defined  %}
+{%  set showAlert = false %}
+{%  endif %}
+{%  if alertId is not defined  %}
+{%  set alertId = "saved-alert" %}
+{%  endif  %}
+{%  if alertContent is not defined  %}
+{%  set alertContent = "Changes successfully saved." %}
+{%  endif  %}
+{%  if alertType is not defined  %}
+{%  set alertType = "success" %}
+{%  endif  %}
+{%  if glyphicon is not defined  %}
+{%  set glyphicon = "ok" %}
+{%  endif  %}
+<div class="alert alert-{{ alertType }} alert-dismissable" id="{{ alertId }}" {%  if showAlert == false  %}style = "display:none"{%  endif %}>
+	<button type="button" class="close" onclick = "$('#{{ alertId }}').hide()"><span aria-hidden="true">×</span></button>
+	<span id = "{{ alertId }}Content">{% autoescape false %}{{  alertContent }}{% endautoescape %}</span>
+</div>			

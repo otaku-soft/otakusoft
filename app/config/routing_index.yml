@@ -1,0 +1,3 @@
+_index_login:
+    resource: "@IndexIndexBundle/Resources/config/routing.yml"
+    prefix:   /

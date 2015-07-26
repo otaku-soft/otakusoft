@@ -1,0 +1,24 @@
+classesclass_update:
+    path:  /update/
+    defaults: { _controller: classesclassBundle:Default:update }
+
+classesclass_add:
+    path:  /add/
+    defaults: { _controller: classesclassBundle:Default:add }
+    
+    
+classesclass_delete:
+    path:  /delete/
+    defaults: { _controller: classesclassBundle:Default:delete }
+
+classesclass_search:
+    path:  /search/
+    defaults: { _controller: classesclassBundle:Default:search }
+    
+classesclass_search:
+    path:  /search/
+    defaults: { _controller: classesclassBundle:Default:search }
+    
+classesclass_search_template:
+    path:  /searchtemplate/{options}
+    defaults: { _controller: classesclassBundle:Default:searchTemplate }

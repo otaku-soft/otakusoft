@@ -1,0 +1,9 @@
+php_flag display_errors on
+
+RewriteEngine On
+# all files with .something are skipped
+RewriteCond %{REQUEST_URI} \..+$
+RewriteCond %{REQUEST_URI} !\.html$
+RewriteRule .* - [L]
+# the others are redirected to the front web controller
+RewriteRule ^(.*)$ index.php [QSA,L]

@@ -1,0 +1,66 @@
+{% block fos_user_content %}
+{% if error %}
+**Errormessage**{{ error|trans({}, 'FOSUserBundle') }}**Errormessage**
+{% endif %}
+{% set alertId = "loginSuccessfulAlert" %}
+{%  set alertContent = "Login Successful, redirecting" %}
+{{ include ("alert.html.twig") }}
+{% set alertId = "loginFailureAlert" %}
+{% set alertType = "danger" %}
+{{ include ("alert.html.twig") }}
+<form  id = "loginform" method="post">
+	<div style = "line-height:16px">
+	    <input type="hidden" id = "token" name="_csrf_token" value="{{ csrf_token }}" />
+
+	    
+	    <input type="text" class = "form-control" id="username" name="_username" value="{{ last_username }}" required="required" placeholder = "Username" />
+      <br/>
+
+
+	    <input type="password" class = "form-control" id="password" name="_password" required="required" placeholder = "Password" />
+
+	    <input type="checkbox" id="remember_me" name="_remember_me" value="on" style = "display:none" />
+	    <label for="remember_me" style = "display:none">Remember me</label>
+    	<br/>
+    	<input type="submit" class="btn btn-primary" id="_submit" name="_submit" value="Submit" />
+	</div>
+</form>
+{% endblock fos_user_content %}
+<script>
+$(document).ready(function() 
+{
+
+  $( "#loginform" ).submit(function( event )
+  {
+      event.preventDefault();
+      login();
+  });
+});
+function login()
+{
+  page = "{{ path("_index_generateAuthenticateSessionId") }}";
+  querystring = "";
+  $.post(page, querystring).done(function(token) 
+  {
+    $("#token").val(token);
+    querystring = $("#loginform").serialize();
+    page = "{{ path("fos_user_security_check") }}";
+    $.post(page, querystring).done(function(data) 
+    {
+
+      var response =  data.split("**Errormessage**"); 
+      if (response.length > 1)
+      {
+      	$("#loginFailureAlertContent").html(response[1]);
+      	showalert('loginFailureAlert');
+      }
+      
+      else
+      {
+      	showalert('loginSuccessfulAlert');
+      	setTimeout(function(){ redirectTo() }, 1000);
+      }
+    });
+  });
+}
+</script>

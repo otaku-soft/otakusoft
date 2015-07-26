@@ -1,0 +1,5 @@
+parameters:
+    index.controller.default: Index\IndexBundle\Controller\DefaultController
+services:
+    index.controller.service:
+        class: "%index.controller.default%"

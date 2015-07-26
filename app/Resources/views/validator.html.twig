@@ -1,0 +1,24 @@
+errorMessage = "";
+{% for field in validationFields %}
+	{% if  field.options.minlength is defined %}
+		if ($("#{{validationId}}{{ field.name }}").val().length < {{ field.options.minlength }})
+		{
+			sectionErrorMessage = '<b>{{ field.description }}</b> must be at least <b style = "color:red">{{ field.options.minlength}} characters</b>';
+			{% include('validatorAppendErrorText.html.twig') %}
+		}
+	{% endif %}
+	{% if  field.options.email is defined %}
+		if (!validateEmail($("#{{validationId}}{{ field.name }}").val()))
+		{
+			sectionErrorMessage = '<b>{{ field.description }}</b> must be a <b style = "color:red">valid email address</b>';
+			{% include('validatorAppendErrorText.html.twig') %}
+		}
+	{% endif %}
+	{% if  field.options.equalto is defined %}
+		if ($("#{{validationId}}{{ field.name }}").val() != $("#{{validationId}}{{ field.options.equalto }}").val())
+		{
+			sectionErrorMessage = '<b>{{ field.description }}</b> and <b>{{ validationFields[field.options.equalto].description }}</b> <b style = "color:red">Must be the same</b>';
+			{% include('validatorAppendErrorText.html.twig') %}
+		}
+	{% endif %}
+{% endfor %}

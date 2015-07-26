@@ -1,0 +1,13 @@
+  
+_index:
+    pattern:  /
+    defaults: { _controller: IndexIndexBundle:Default:index }
+    
+_index_register:
+    pattern:  /register/
+    defaults: { _controller: IndexIndexBundle:Default:register }  
+
+
+_index_generateAuthenticateSessionId:
+    pattern:  /generatesessionid
+    defaults: { _controller: IndexIndexBundle:Default:generateAuthenticateSessionId }

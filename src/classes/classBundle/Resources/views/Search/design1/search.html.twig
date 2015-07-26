@@ -1,0 +1,48 @@
+
+ <img src = "/images/alpha.png" onload = "newsearch('{{ options.table }}','{{ options.listname }}','{{ options.templatename }}','reload')" style = "width:100%;height:1px">
+
+<div style = "display:{{ options.searchoptionsdisplay }}" >
+
+  <!-- total records -->
+  <span style = "display:{% block totalrows %}block{% endblock %}">
+    <span id = "{{ options.listname }}totalrows"></span>
+    {{ options.datatype }}<br/>
+  </span>
+
+  <!-- current page number and total pages -->
+  <span style = "display:{% block pagenumber %}block{% endblock %}">
+    Pagenumber: <span id = "{{ options.listname }}currentpagenumber">1</span> of <span id = "{{ options.listname }}totalpages"></span><br/>
+  </span>
+
+
+    <input type = "text" id = "{{ options.listname }}search" value = "" onkeyup = "if (event.keyCode == 13)newsearch('{{ options.table }}','{{ options.listname }}','{{ options.templatename }}')" />
+    <input type = "text" id = "{{ options.listname }}searchtypes" value = "{{ options.searchtypes }}" style = "display:none"/>
+    <input type = "text" id = "{{ options.listname }}findby" value = "{{ options.findby }}" style = "display:none"/>
+     <input type = "text" id = "{{ options.listname }}findbyvalue" value = "{{ options.findbyvalue }}" style = "display:none"/>
+    <input type = "button" onclick = "newsearch('{{ options.table }}','{{ options.listname }}','{{ options.templatename }}')" id = "{{ options.listname }}button" value = "submit" />
+    <br/>
+   <span style = "display:{% block navigators %}block{% endblock %}">  <span onclick = "searchformprev('{{ options.table }}','{{ options.listname }}','{{ options.templatename }}','reload');"  id = "{{ options.listname }}previous" style = "cursor:pointer"> previous  </span> <span onclick = "searchformnext('{{ options.table }}','{{ options.listname }}','{{ options.templatename }}','reload');" id = "{{ options.listname }}next" style = "cursor:pointer"> next </span> <br/></span>
+  <span style = "display:{% block resultsperpage %}block{% endblock %}">Results per page<select   id = "{{ options.listname }}maxresults" onchange = "newsearch('{{ options.table }}','{{ options.listname }}','{{ options.templatename }}','reload')" >
+             {% for item in options.resultsperpage %}  
+             <option value = "{{ item }}">{{ item }}</option>
+                      {% endfor %}
+                </select></span>
+                <span style = "display:{% block filterbyletter %}block{% endblock %}">Filter by letter:  <select  id = "{{ options.listname }}selectedletter" onchange = "newsearch('{{ options.table }}','{{ options.listname }}','{{ options.templatename }}','reload')" >
+                <option value = ""></option>
+                  {% for item in options.filterby %}
+                   <option value = "{{ item }}">{{ item }}</option>
+                  {% endfor %}
+                                  </select>
+                                  </span>
+                                  </div>
+          <span style = "display:{% block sortby %}block{% endblock %}">       Sort by: <select id = "{{ options.listname }}searchtype" onchange = "newsearch('{{ options.table }}','{{ options.listname }}','{{ options.templatename }}','reload');{% block extraselectfunctions %}{% endblock %}">
+                 {% for item in options.searchoptions %}  
+                 <option value = "{{ item.value }}">{{ item.description }}</option>
+                  {% endfor %}
+                  </select> 
+                  </span>
+                  {% block extraparamemters %}{% endblock %}
+    <div id = "{{ options.listname }}">
+  
+</div>
+

@@ -1,0 +1,6 @@
+parameters:
+#    classesclass.example.class: classes\classBundle\Example
+
+services:
+    generalfunctions:
+        class: classes\classBundle\Controller\DefaultController
