@@ -1,0 +1,63 @@
+{% set pagetitle = "Forum Index" %}
+{% extends "layout.html.twig" %}
+{% block content %}
+{% for category in categories %}
+<div class="panel panel-category">
+	<div class="panel-heading">{{ category.title }}</div>
+	<div class="panel-body" {% if category.forums is defined %}style = "padding:0px;margin:0px"{% endif %}>
+
+		{% if category.forums is  not defined %}
+		<span style = "padding-left:10px">No forums have been created for this category yet.</span>
+		{% else %}
+
+		<table class="table " style = "padding:0px;margin:0px">
+		  <thead>
+		  	<tr>
+		  		<th>Name</th>
+		  		<th>Description</th>
+		  		<th>Threads</th>
+		  		<th>Posts</th>
+		  		<th>Last Post</th>
+		  		<th>Last Post Time</th>
+		  		<th>Last Poster</th>
+		  	</tr>
+		  </thead>
+		  <tbody>
+		  {% for forum in category.forums %}
+		  	<tr>
+		  		<td>{{ forum.title }}</td>
+		  		<td>{{ forum.description}}</td>
+
+		  		{% if forum.lastTitle is not defined  %}
+		  		<td colspan = "5">
+		  		
+		  		</td>
+		  		{% else %}
+		  		{% set dateField = forum.lastActivity %}
+		  		<td>{{ forum.topicCount }}</td>
+		  		<td>{{ forum.postCount }}</td>
+		  		<td>{{ forum.lastTitle }}</td>
+		  		<td> {{ include ("displaydate.html.twig") }}</td>
+		  		<td>
+		  			{{  forum.lastPoster.username}} 
+		  			{% if forum.lastPoster.avatar != "" %}
+		  			{% set avatar = 'avatars/' ~ forum.lastPoster.avatar %}
+		  			<img src = "{{ asset(avatar) }}" alt = "bad image" style = "max-height:20px" />
+		  			{% endif %}
+
+		  		</td>
+		  		{% endif %}
+		  	</tr>
+		  {% endfor %}
+		  </tbody>
+		</table>
+		{% endif %}
+	</div>
+</div>
+{% endfor %}
+{% endblock %}
+
+
+  
+   
+  

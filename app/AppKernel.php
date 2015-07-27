@@ -21,7 +21,8 @@ class AppKernel extends Kernel
             new classes\classBundle\classesclassBundle(),
             new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle(),
             new FOS\UserBundle\FOSUserBundle()
-            
+,
+            new ForumBundle\ForumBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

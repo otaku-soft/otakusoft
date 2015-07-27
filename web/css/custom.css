@@ -48,3 +48,22 @@ code {
   text-align: center;
   background-color:#F8F8F8 ;
 }
+
+.panel-category {
+  border-color: #627296;
+}
+.panel-category > .panel-heading {
+  color: #fff;
+  background-color: #627296;
+  border-color: #627296;
+}
+.panel-category > .panel-heading + .panel-collapse > .panel-body {
+  border-top-color: #627296;
+}
+.panel-category > .panel-heading .badge {
+  color: #627296;
+  background-color: #fff;
+}
+.panel-category > .panel-footer + .panel-collapse > .panel-body {
+  border-bottom-color: #627296;
+}

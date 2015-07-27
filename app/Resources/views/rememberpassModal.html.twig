@@ -1,0 +1,37 @@
+<div class="modal fade" id="forgotpasswordModule" tabindex="-1" role="dialog" aria-labelledby="forgotpasswordModuleLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="forgotpasswordModuleLabel">Forgot Password</h4>
+      </div>
+      <div class="modal-body">
+
+        <div id = "requestPasswordContainer" >
+            <br/>
+            <form id = "requestPassword" class="fos_user_resetting_request">
+                <div>
+                    <input type="text" id="username" name="username" required="required" class = "form-control" placeholder = "Your Username or email"  />
+                </div>
+            </form>
+            <br/>
+            {% set alertId = "emailSentAlert"%}
+            {% set alertContent = "Email Sent" %}
+            {{ include("alert.html.twig") }}
+            {% set alertId = "doesNotExistAlert"%}
+            {% set alertContent = "Email Address does not exist" %}
+            {% set glyphicon = "remove" %}
+            {% set alertType = "danger" %}    
+            {{ include("alert.html.twig") }}
+            {% set alertId = "last24HoursAlert"%}
+            {% set alertContent = "The password for this user has already been requested within the last 24 hours. <br/>If you did not request this change or did not recieve an email.  Contact flamehiro@gmail.com" %}
+            {{ include("alert.html.twig") }}
+        </div>
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary"  onclick = "sendEmail()">Find Pass</button>
+      </div>
+    </div>
+  </div>

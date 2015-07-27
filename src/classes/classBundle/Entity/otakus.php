@@ -59,7 +59,7 @@ class otakus extends BaseUser
     public $nyanPoints;   
     
 
-    public function __construct()//do not remove, will fail for doctrine add function
+    public function __construct()
     {
         $vars= array("avatar","aboutme","hobbies","favoriteAnimes","favoriteGames","nyanPoints");
         foreach ($vars as $key )

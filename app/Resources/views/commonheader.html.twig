@@ -105,7 +105,20 @@
       page = "";
       window.location = page;
     }
-
+    function sendEmail()
+    {
+      querystring = $("#requestPassword").serialize();
+      page = "{{ path("fos_user_resetting_send_email") }}";
+      $.post(page, querystring).done(function(data) 
+      {
+        if (data.indexOf("does not exist") > -1)
+        $("#doesNotExistAlert").show();
+        else if (data.indexOf("last 24 hours") > -1)
+        $("#last24HoursAlert").show();
+        else
+        $("#emailSentAlert").show();
+      });  
+    }
     </script>
 
   </head>
