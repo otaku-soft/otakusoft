@@ -30,12 +30,12 @@ class DefaultController extends Controller
                 $forum->postCount = $counts['postCount'];
 
 	    		$repository = $em->getRepository('classesclassBundle:topics');
-	    		$lasttopic = $repository->findOneBy(array("forumid" =>$forum->id),array("id" => "desc"));
+	    		$lasttopic = $repository->findOneBy(array("forumid" =>$forum->id),array("lastModified" => "desc"));
 	    		$repository = $em->getRepository('classesclassBundle:posts');
 	    		$lastpost = $repository->findOneBy(array("forumid" =>$forum->id),array("id" => "desc"));	
 	    		if ($lasttopic != null)
 	    		{
-		    		$forum->lastTitle = $lasttopic->title;
+		    		$forum->lastTopic = $lasttopic;
 		    		$repository = $em->getRepository('classesclassBundle:otakus');
 		    		$forum->lastActivity = $lastpost->dateCreated;
 		    		$forum->lastPoster = $repository->findOneBy(array("id" =>$lastpost->otakuid));
@@ -112,7 +112,44 @@ class DefaultController extends Controller
             $posts->topicid = $topics->id;
             $em->persist($posts);
             $em->flush();
+            return new Response($this->generateUrl('forum_intopic',array("topicid" => $topics->id,"title" => $topics->title)));
         }
-        return new Response("");
+        return "";
+    }
+
+    public function intopicAction($topicid,$title)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('classesclassBundle:topics');
+        $topic =  $repository->findOneBy(array("id" => $topicid));
+        $repository = $em->getRepository('classesclassBundle:posts');
+        $posts = $repository->findBy(array("topicid" => $topicid));
+        $repository = $em->getRepository('classesclassBundle:forums');
+        $forum =  $repository->findOneBy(array("id" => $topic->forumid));
+        foreach ($posts as $post)
+        {
+            $repository = $em->getRepository('classesclassBundle:otakus');
+            $post->otaku = $repository->findOneBy(array("id" => $post->otakuid));
+            $post->otaku->postCount = $this->getCountById("posts",array("otakuid" => $post->otakuid));
+        }
+        return $this->render('ForumBundle:Default:intopic.html.twig',array("posts" => $posts,"title" => $title,"topic" => $topic,"forum" => $forum));
+    }
+    public function intopicNewPostAction()
+    {
+        $otakusClass = new otakusClass($this);
+        if ($otakusClass->isRole("USER"))
+        {
+            $em = $this->getDoctrine()->getManager();
+            $functionsClass = new functionsClass($this);
+            $posts = new posts();
+            $functionsClass->copyRequestObject($posts);
+            $posts->otakuid = $otakusClass->getId();
+            $em->persist($posts);
+            $repository = $em->getRepository('classesclassBundle:topics'); 
+            $topic = $repository->findOneBy(array("id" => $posts->topicid)); 
+            $topic->lastModified =  new \DateTime("now");         
+            $em->flush();            
+        }
+        return new Response("");        
     }
 }

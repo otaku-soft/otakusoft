@@ -25,7 +25,7 @@
 		{% for topic in topics %}
 				<tr>
 					<td>
-						{{ topic.title }}
+						<a href = "{{ path('forum_intopic', {'topicid': topic.id,'title':topic.title}) }}">{{ topic.title }}</a>
 					</td>
 					<td>
 						{% set user = topic.starter %}
@@ -67,7 +67,7 @@
 	<br/>
 	<input type = "text" id = "topicforumid" name = "forumid" value = "{{ forumid}}" style = "display:none" />
 	<input type = "text" id = "topiccategoryid" name = "categoryid" value = "{{ categoryid}}" style = "display:none" />
-	<textarea name="message" id = "topicmessage"  style = "height:300px;resize:none" placeholder = "Message" class="form-control" maxlength="65535" ></textarea>
+	<textarea name="message" id = "topicmessage"  style = "height:200px;resize:none" placeholder = "Message" class="form-control" maxlength="65535" ></textarea>
 	<br/>
 	<button class = "btn btn-success">Submit</button>
 </form>
@@ -98,7 +98,7 @@ $( document ).ready(function()
 	        $.post(page, querystring) 
 	        .done(function(data) 
 	        {
-
+	        	window.location = data;
 	        });
 		}
 	});

@@ -6,6 +6,15 @@ forum_inforum:
     path:     /{forumid}/{title}.html
     defaults: { _controller: ForumBundle:Default:inforum }    
 
+forum_intopic:
+    path:     /topic/{topicid}/{title}.html
+    defaults: { _controller: ForumBundle:Default:intopic }   
+
 forum_inforum_PostNewTopic:
     path:     /postnewtopics
     defaults: { _controller: ForumBundle:Default:inforumPostNewTopic }   
+
+
+forum_intopic_intopicNewPost:
+    path:     /postnewpost
+    defaults: { _controller: ForumBundle:Default:intopicNewPost }   

@@ -1,0 +1,75 @@
+{% set pagetitle = "Topic - " ~ title %}
+{% extends "layout.html.twig" %}
+{% block content %}
+<a href = "{{ path('forum_index') }}">Index</a> /
+<a href = "{{ path('forum_inforum', {'forumid': forum.id,'title':forum.title}) }}">{{ forum.title }}</a><br/><br/>
+
+<div class="panel panel-category">
+	<div class="panel-heading">Posts</div>
+	<div class="panel-body nospace" >
+		<table class="table table-bordered nospace" >
+
+			</thread>
+			<tbody>
+				{% for post in posts %}
+				 <tr>
+				     <td  align = "center">
+				     	<label>{{ post.otaku.username }}</label><br/>
+				     	{% set avatar = 'avatars/' ~ post.otaku.avatar %}
+						<img src = "{{ asset(avatar) }}" alt = "bad image" style = "max-height:100px" /><br/>
+						Posts: {{ post.otaku.postCount}}
+				     </td>
+				     <td width = "100%" >
+				     	{% if loop.index == 1 %}
+				     	{{ title }}
+				     	<hr/>
+				     	{% endif %}
+				     	{{ post.message }}
+				     </td>
+				</tr>
+			 	{% endfor %}
+			 </tbody>
+		</table>
+	</div>
+</div>
+
+
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+<label>Reply to Topic</label>
+<form id = "addPost">
+	<input type = "text" name = "topicid" value = "{{  topic.id }}" style = "display:none" />
+	<input type = "text" name = "categoryid" value = "{{  topic.categoryid }}"  style = "display:none"/>
+	<input type = "text" name = "forumid" value = "{{  topic.forumid }}" style = "display:none" />
+	<textarea name="message" id = "addPostMessage"  style = "height:200px;resize:none" placeholder = "Message" class="form-control" maxlength="65535" ></textarea>
+	<br/>
+	<button class = "btn btn-success">Submit</button>
+</form>
+<script>
+$( document ).ready(function() 
+{
+	$("#addPost").submit(function(event)
+	{
+		event.preventDefault();
+		errorMessage = "";
+		if ($("#addPostMessage").val() == "")
+		{
+			sectionErrorMessage = "Message must be filled out";
+			{% include "validatorAppendErrorText.html.twig" %}
+		}
+		if (errorMessage != "")
+		showAlert("Oh noes",errorMessage,"","alert alert-warning");
+		else
+		{
+			var querystring = $("#addPost").serialize();
+			var page = "{{ path('forum_intopic_intopicNewPost') }}";
+	        $.post(page, querystring) 
+	        .done(function(data) 
+	        {
+	        	window.location = "";
+	        });
+		}
+	});
+});
+</script>
+{% endif %}
+{% endblock %}

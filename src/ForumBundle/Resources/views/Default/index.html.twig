@@ -28,7 +28,7 @@
 		  		<td><a href = "{{ path('forum_inforum', {'forumid': forum.id,'title':forum.title}) }}">{{ forum.title }}</a></td>
 		  		<td>{{ forum.description}}</td>
 
-		  		{% if forum.lastTitle is not defined  %}
+		  		{% if forum.lastTopic is not defined  %}
 		  		<td colspan = "5">
 		  		
 		  		</td>
@@ -36,7 +36,7 @@
 		  		{% set dateField = forum.lastActivity %}
 		  		<td>{{ forum.topicCount }}</td>
 		  		<td>{{ forum.postCount }}</td>
-		  		<td>{{ forum.lastTitle }}</td>
+		  		<td><a href = "{{ path('forum_intopic', {'topicid': forum.lastTopic.id,'title':forum.lastTopic.title}) }}">{{ forum.lastTopic.title }}</a></td>
 		  		<td> {{ include ("displaydate.html.twig") }}</td>
 		  		<td>
 		  			{% set user = forum.lastPoster %}
