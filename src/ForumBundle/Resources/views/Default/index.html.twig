@@ -36,7 +36,7 @@
 		  		{% set dateField = forum.lastActivity %}
 		  		<td>{{ forum.topicCount }}</td>
 		  		<td>{{ forum.postCount }}</td>
-		  		<td><a href = "{{ path('forum_intopic', {'topicid': forum.lastTopic.id,'title':forum.lastTopic.title}) }}">{{ forum.lastTopic.title }}</a></td>
+		  		<td><a href = "{{ path('forum_intopic', {'topicid': forum.lastTopic.id,'title':forum.lastTopic.title}) }}?newpost=true">{{ forum.lastTopic.title }}</a></td>
 		  		<td> {{ include ("displaydate.html.twig") }}</td>
 		  		<td>
 		  			{% set user = forum.lastPoster %}

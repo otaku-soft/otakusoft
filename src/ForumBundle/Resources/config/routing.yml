@@ -6,6 +6,8 @@ forum_inforum:
     path:     /{forumid}/{title}.html
     defaults: { _controller: ForumBundle:Default:inforum }    
 
+
+
 forum_intopic:
     path:     /topic/{topicid}/{title}.html
     defaults: { _controller: ForumBundle:Default:intopic }   

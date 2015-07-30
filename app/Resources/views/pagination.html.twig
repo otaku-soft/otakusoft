@@ -1,0 +1,21 @@
+{% set originalPagination = pagination %}
+{% if totalPages > 1 %}
+  <ul class="pagination">
+
+  	<li><a href="{{ path(paginationPath, pagination) }}">First</a></li>
+  	{% for i in (pagenumber-4)..(pagenumber+4) %}
+  	{% if i > 0 and i <= totalPages %}
+    {% if i == 1 %}
+  	{% set pagination = originalPagination %}
+    {% else %}
+    {% set pagination = pagination|merge({'pagenumber': i}) %}
+    {% endif %}
+
+    <li {% if i == pagenumber %}class = "active"{% endif %}><a href="{{ path(paginationPath, pagination) }}">{{ i }}</a></li>
+    {% endif %}
+	{% endfor %}
+	{% set pagination = pagination|merge({'pagenumber': totalPages}) %}
+    <li><a href="{{ path(paginationPath, pagination) }}">Last</a></li>
+  </ul>
+</nav>
+{% endif %}

@@ -1,9 +1,12 @@
 {% set pagetitle = title %}
 {% extends "layout.html.twig" %}
+{% set totalPagesOrg = totalPages %}
+{% set pagenumberOrg = pagenumber %}
+{% set pagenumber = 1 %}
 {% block content %}
 <a href = "{{ path('forum_index') }}">Return to Forum Index</a><br/><br/>
 <div class="panel panel-category">
-	<div class="panel-heading">Topics</div>
+	<div class="panel-heading">Topics<span class = "pull-right">Topics:{{ totalTopics  }} Posts:{{ totalPosts }}</span></div>
 	<div class="panel-body {% if topics is not null %}nospace{% endif %}" >
 
 		{% if topics is  null %}
@@ -24,8 +27,13 @@
 		{% endif %}
 		{% for topic in topics %}
 				<tr>
-					<td>
-						<a href = "{{ path('forum_intopic', {'topicid': topic.id,'title':topic.title}) }}">{{ topic.title }}</a>
+					<td >
+						<a href = "{{ path('forum_intopic', {'topicid': topic.id,'title':topic.title}) }}">{{ topic.title }}</a><span class = "pull-right">
+						{% set totalPages = topic.totalPages %}
+						{% set pagination = {'topicid': topic.id,'title':topic.title} %}
+						{% set paginationPath = 'forum_intopic' %}
+						{% include "paginationmini.html.twig" %}
+						</span>
 					</td>
 					<td>
 						{% set user = topic.starter %}
@@ -52,11 +60,19 @@
 					</td>
 				</tr>
 
+
 		{% endfor %}
 			</tbody>
 		</table>
 	</div>
 </div>
+
+<nav>
+{% set pagenumber = pagenumberOrg %}
+{% set totalPages = totalPagesOrg %}
+{% set pagination = {'forumid': forum.id,'title':forum.title} %}
+{% set paginationPath = 'forum_inforum' %}
+{% include "pagination.html.twig" %}
 
 <hr/>
 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
