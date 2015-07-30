@@ -7,29 +7,29 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <span class="navbar-brand" >Navigation</span>
+          {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+          <span class="navbar-brand" >Welcome {{ app.user.username }}</span>
+          {% else %}
+          <span class="navbar-brand" >Welcome Guest</span>
+
+          {% endif %}
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-
+            {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            <li><a href = "{{ path('_index') }}">Register</a></li>
+            {% endif %}
             <li><a href = "{{ path('forum_index') }}">Forum</a></li>
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
             <li><a href = "{{ path('fos_user_security_logout') }}">Logout</a></li>
             {% else %}
-            <li><a href = "{{ path('_index') }}">Register</a></li>
+            
             <li><a href = "javascript:ajaxModal('/login','Log in','small',false)">Login</a></li>
             <li><a data-toggle="modal" data-target="#forgotpasswordModule" style = "cursor:pointer">Forgot Password</a></li>
             {% endif %}
             
           </ul>
-          <ul class="nav navbar-nav pull-right">
-          {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-          <li  style = "color:#777;padding-top:15px">Welcome {{ app.user.username }}</li>
-          {% else %}
-          <li  style = "color:#777;padding-top:15px">Welcome Guest</li>
 
-          {% endif %}
-          </ul>
 
         </div><!--/.nav-collapse -->
       </div>

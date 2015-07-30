@@ -1,0 +1,115 @@
+{% set pagetitle = title %}
+{% extends "layout.html.twig" %}
+{% block content %}
+<a href = "{{ path('forum_index') }}">Return to Forum Index</a><br/><br/>
+<div class="panel panel-category">
+	<div class="panel-heading">Topics</div>
+	<div class="panel-body {% if topics is not null %}nospace{% endif %}" >
+
+		{% if topics is  null %}
+		<span >No Topics have been created for this category yet.</span>
+		{% else %}
+		<table class="table nospace" >
+			<thead>
+				<tr>
+					<th>Title</th>
+					<th>Author</th>
+					<th>Date Created</th>
+					<th>Replies</th>
+					<th>Last Post By</th>
+					<th>Last Post Date</th>
+				</tr>
+			</thead>
+			<tbody>
+		{% endif %}
+		{% for topic in topics %}
+				<tr>
+					<td>
+						{{ topic.title }}
+					</td>
+					<td>
+						{% set user = topic.starter %}
+						{% include "inlineavatar.html.twig" %}
+					</td>
+					<td>
+						{% set dateField = topic.dateCreated %}
+						{{ include ("displaydate.html.twig") }}
+					</td>
+			  		<td>
+			  			{{ topic.replies }}
+			  		</td>
+		  			<td>					
+			  			{% set user = topic.lastPostBy %}
+						{% include "inlineavatar.html.twig" %}
+					</td>
+					<td>
+						{% if topic.lastPost.dateCreated is defined %}
+						{% set dateField = topic.lastPost.dateCreated %}
+						{% else %}
+						{% set dateField = topic.dateCreated %}
+						{% endif %}
+						{{ include ("displaydate.html.twig") }}
+					</td>
+				</tr>
+
+		{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<hr/>
+{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+
+<label>Add Topic</label>
+<form id = "addTopic">
+	<input type = "text" id = "topictitle"name = "title" placeholder = "Title" class = "form-control" />
+	<br/>
+	<input type = "text" id = "topicforumid" name = "forumid" value = "{{ forumid}}" style = "display:none" />
+	<input type = "text" id = "topiccategoryid" name = "categoryid" value = "{{ categoryid}}" style = "display:none" />
+	<textarea name="message" id = "topicmessage"  style = "height:300px;resize:none" placeholder = "Message" class="form-control" maxlength="65535" ></textarea>
+	<br/>
+	<button class = "btn btn-success">Submit</button>
+</form>
+
+<script>
+$( document ).ready(function() 
+{
+	$("#addTopic").submit(function(event)
+	{
+		event.preventDefault();
+		errorMessage = "";
+		if ($("#topictitle").val() == "")
+		{
+			sectionErrorMessage = "Title must be filled out";
+			{% include "validatorAppendErrorText.html.twig" %}
+		}
+		if ($("#topicmessage").val() == "")
+		{
+			sectionErrorMessage = "Message must be filled out";
+			{% include "validatorAppendErrorText.html.twig" %}
+		}
+		if (errorMessage != "")
+		showAlert("Oh noes",errorMessage,"","alert alert-warning");
+		else
+		{
+			var querystring = $("#addTopic").serialize();
+			var page = "{{ path('forum_inforum_PostNewTopic') }}";
+	        $.post(page, querystring) 
+	        .done(function(data) 
+	        {
+
+	        });
+		}
+	});
+});
+</script>
+{% endif %}
+
+{% endblock %}
+
+
+
+  
+   
+  

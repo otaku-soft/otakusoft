@@ -6,13 +6,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use classes\classBundle\Entity\otakus;
-
+use classes\classBundle\Classes\otakusClass;
 class DefaultController extends Controller
 {
 	public $fields;
     public function indexAction()
     {
-    	$this->init();
+        $this->init();
+        $otakusClass = new otakusClass($this);
+        if ($otakusClass->isRole("USER"))
+        return $this->redirect($this->generateUrl('forum_index'));    
+
     	return $this->render('IndexIndexBundle:Default:index.html.twig',array("fields" => $this->fields));
     }
     function init()

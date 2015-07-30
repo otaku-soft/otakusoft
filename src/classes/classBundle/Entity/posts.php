@@ -64,6 +64,8 @@ class posts
             
             $this->$key = "";
         }
+        $this->dateCreated = new \DateTime("now");
+
     }
 
 }

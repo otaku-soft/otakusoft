@@ -46,15 +46,15 @@ class topics
      /**
      * @var integer
      *
-     * @ORM\Column(name="description", type = "text")
-     */
-    public $description; 
-     /**
-     * @var integer
-     *
      * @ORM\Column(name="dateCreated", type = "datetime")
      */
     public $dateCreated; 
+     /**
+     * @var integer
+     *
+     * @ORM\Column(name="lastModified", type = "datetime")
+     */
+    public $lastModified;     
 
 
     public function __construct()
@@ -65,6 +65,8 @@ class topics
             
             $this->$key = "";
         }
+        $this->dateCreated = new \DateTime("now");
+        $this->lastModified = new \DateTime("now");
     }
 
 }

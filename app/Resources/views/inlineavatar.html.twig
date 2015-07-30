@@ -1,0 +1,5 @@
+{{  user.username}} 
+{% if user.avatar != "" %}
+{% set avatar = 'avatars/' ~ user.avatar %}
+<img src = "{{ asset(avatar) }}" alt = "bad image" style = "max-height:20px" />
+{% endif %}

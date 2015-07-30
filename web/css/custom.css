@@ -67,3 +67,11 @@ code {
 .panel-category > .panel-footer + .panel-collapse > .panel-body {
   border-bottom-color: #627296;
 }
+.nospace
+{
+padding:0px !important;margin:0px !important;
+}
+
+body{
+  background-color:#fff6f9 !important;
+}
