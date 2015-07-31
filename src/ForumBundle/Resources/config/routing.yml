@@ -3,13 +3,13 @@ forum_index:
     defaults: { _controller: ForumBundle:Default:index }
 
 forum_inforum:
-    path:     /{forumid}/{title}.html
+    path:     /{forumid}/{title}
     defaults: { _controller: ForumBundle:Default:inforum }    
 
 
 
 forum_intopic:
-    path:     /topic/{topicid}/{title}.html
+    path:     /topic/{topicid}/{title}
     defaults: { _controller: ForumBundle:Default:intopic }   
 
 forum_inforum_PostNewTopic:

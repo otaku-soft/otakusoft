@@ -108,6 +108,7 @@ class DefaultController extends Controller
             $functionsClass->copyRequestObject($posts);
             $posts->otakuid = $otakusClass->getId();
             $posts->topicid = $topics->id;
+            $posts->message = str_replace('../../','/',$posts->message);
             $em->persist($posts);
             $em->flush();
             return new Response($this->generateUrl('forum_intopic',array("topicid" => $topics->id,"title" => $topics->title,"pagenumber"=> 1)));
@@ -155,6 +156,8 @@ class DefaultController extends Controller
             $posts = new posts();
             $functionsClass->copyRequestObject($posts);
             $posts->otakuid = $otakusClass->getId();
+            $posts->message = str_replace('../../../','/',$posts->message);
+
             $em->persist($posts);
             $repository = $em->getRepository('classesclassBundle:topics'); 
             $topic = $repository->findOneBy(array("id" => $posts->topicid)); 

@@ -74,7 +74,7 @@
 {% set paginationPath = 'forum_inforum' %}
 {% include "pagination.html.twig" %}
 
-<hr/>
+
 {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
 
 <label>Add Topic</label>
@@ -89,18 +89,26 @@
 </form>
 
 <script>
+
 $( document ).ready(function() 
 {
+	   
+
+    
+
 	$("#addTopic").submit(function(event)
 	{
 		event.preventDefault();
+
+
+		
 		errorMessage = "";
 		if ($("#topictitle").val() == "")
 		{
 			sectionErrorMessage = "Title must be filled out";
 			{% include "validatorAppendErrorText.html.twig" %}
 		}
-		if ($("#topicmessage").val() == "")
+		if (tinyMCE.get('topicmessage').getContent() == "")
 		{
 			sectionErrorMessage = "Message must be filled out";
 			{% include "validatorAppendErrorText.html.twig" %}
@@ -110,12 +118,16 @@ $( document ).ready(function()
 		else
 		{
 			var querystring = $("#addTopic").serialize();
+			querystring = querystring + "&message=" + tinyMCE.get('topicmessage').getContent();
 			var page = "{{ path('forum_inforum_PostNewTopic') }}";
+			
+			
 	        $.post(page, querystring) 
 	        .done(function(data) 
 	        {
 	        	window.location = data;
 	        });
+	        
 		}
 	});
 });

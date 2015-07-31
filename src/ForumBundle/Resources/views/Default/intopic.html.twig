@@ -24,7 +24,7 @@
 				     	{{ title }}
 				     	<hr/>
 				     	{% endif %}
-				     	{{ post.message }}
+				     	{{ post.message | raw }}
 				     </td>
 				</tr>
 			 	{% endfor %}
@@ -58,11 +58,12 @@ $('html, body').animate({scrollTop: $("#newpost").offset().top}, 2000)
 <script>
 $( document ).ready(function() 
 {
+
 	$("#addPost").submit(function(event)
 	{
 		event.preventDefault();
 		errorMessage = "";
-		if ($("#addPostMessage").val() == "")
+		if (tinyMCE.get('addPostMessage').getContent() == "")
 		{
 			sectionErrorMessage = "Message must be filled out";
 			{% include "validatorAppendErrorText.html.twig" %}
@@ -72,6 +73,7 @@ $( document ).ready(function()
 		else
 		{
 			var querystring = $("#addPost").serialize();
+			querystring = querystring +"&message=" + tinyMCE.get('addPostMessage').getContent();
 			var page = "{{ path('forum_intopic_intopicNewPost') }}";
 	        $.post(page, querystring) 
 	        .done(function(data) 

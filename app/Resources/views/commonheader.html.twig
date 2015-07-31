@@ -23,6 +23,7 @@
     <!-- Bootstrap theme -->
     <link href="{{ asset('css/jquery.validate.password.css') }}" rel="stylesheet">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+    <script type="text/javascript" src="{{asset('tinymce_jquery/js/tinymce/tinymce.min.js') }}"></script>
     <!-- Custom styles for this template -->
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -30,6 +31,16 @@
       <script src="{{ asset('js/respond.min.js') }}"></script>
     <![endif]-->
     <script>
+    tinymce.init(
+    {
+      selector: "textarea",
+      plugins: [
+        "advlist autolink lists link image charmap print preview anchor",
+        "searchreplace visualblocks code ",
+        "insertdatetime media table contextmenu paste","emoticons"
+      ],
+      toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | emoticons"
+    });
     var errorMessage = "";
     var appendText = "";
     function showAlert(title,message,titleClass,messageClass)
