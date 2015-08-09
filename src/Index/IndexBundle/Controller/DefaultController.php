@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use classes\classBundle\Entity\otakus;
 use classes\classBundle\Classes\otakusClass;
+use classes\classBundle\Classes\functionsClass;
 class DefaultController extends Controller
 {
 	public $fields;
@@ -22,25 +23,18 @@ class DefaultController extends Controller
     function init()
     {
         $this->fields = array();
-    	$this->addfield($this->fields,"username","Username","text",array("minlength" => 5));
-    	$this->addfield($this->fields,"email","Email","text", array("email" => true));
-    	$this->addfield($this->fields,"password","Password","password",array("minlength" => 6));
-    	$this->addfield($this->fields,"confirmpassword","Confirm Password","password",array("equalto" => "password","minlength" => 6));
+        $functionsClass = new functionsClass($this);
+    	$functionsClass->addfield($this->fields,"username","Username",array("type" => "text","minlength" => 5));
+    	$functionsClass->addfield($this->fields,"email","Email", array("type" => "text","email" => true));
+    	$functionsClass->addfield($this->fields,"password","Password",array("type" => "password","minlength" => 6));
+    	$functionsClass->addfield($this->fields,"confirmpassword","Confirm Password",array( "type" =>"password","equalto" => "password","minlength" => 6));
     	//$this->addfield($this->fields,"aboutme","About Me","textarea");
     	//$this->addfield($this->fields,"hobbies","Hobbies","textarea");
     	//$this->addfield($this->fields,"favoriteAnimes","Favorite Animes","textarea");
     	//$this->addfield($this->fields,"favoriteGames","Favorite Games","textarea");
     	//$this->addfield($this->fields,"avatar","Avatar","file");    
     }
-    public function addfield(&$fields,$name,$description,$type,$options = array())
-    {
-        $fields[$name] = new \stdClass();
-    	$fields[$name]->name = $name;
-    	$fields[$name]->description = $description;
-    	$fields[$name]->type = $type;
-        $fields[$name]->options = $options;
 
-    }
     public function registerAction()
     {
         $request = Request::createFromGlobals();

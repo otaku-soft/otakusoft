@@ -1,22 +1,23 @@
 forum_index:
     path:     /
     defaults: { _controller: ForumBundle:Default:index }
-
+forum_inforum_search:
+    path:     /search/{forumid}/
+    defaults: { _controller: ForumBundle:Default:inforumSearch } 
 forum_inforum:
     path:     /{forumid}/{title}
     defaults: { _controller: ForumBundle:Default:inforum }    
 
-
+forum_inforum_PostNewTopic:
+    path:     /postnewtopics
+    defaults: { _controller: ForumBundle:Default:inforumPostNewTopic } 
 
 forum_intopic:
     path:     /topic/{topicid}/{title}
     defaults: { _controller: ForumBundle:Default:intopic }   
 
-forum_inforum_PostNewTopic:
-    path:     /postnewtopics
-    defaults: { _controller: ForumBundle:Default:inforumPostNewTopic }   
-
 
 forum_intopic_intopicNewPost:
     path:     /postnewpost
     defaults: { _controller: ForumBundle:Default:intopicNewPost }   
+

@@ -11,13 +11,13 @@
     {% for field in fields %}
 
     <b>{{ field.description }}</b><br/>
-    {% if field.type == "textarea" %}
+    {% if field.options.type == "textarea" %}
     <textarea id = "register{{ field.name }}" name = "{{ field.name }}" style = "width:100%;height:100px;resize:none" placeholder = "Enter your {{ field.description }} here"></textarea>
-    {% elseif field.type == "file" %}
+    {% elseif field.options.type== "file" %}
     <input type='file' name = "{{ field.name }}" id="register{{ field.name }}" />
     <img id="register{{ field.name }}Image" src="#" alt="" style = "max-width:250px" />
     {% else %}
-    <input type = "{{ field.type }}"  class = "form-control"   name = "{{ field.name }}" id = "register{{ field.name }}" placeholder = "Enter your {{ field.description }} here" /> 
+    <input type = "{{ field.options.type }}"  class = "form-control"   name = "{{ field.name }}" id = "register{{ field.name }}" placeholder = "Enter your {{ field.description }} here" /> 
     {% endif %}
     <br/>
     
@@ -46,7 +46,7 @@ function readURL(input)
 $( document ).ready(function() 
 {
   {% for field in fields %}
-  {% if field.type == "file" %}
+  {% if field.options.type == "file" %}
   $("#register{{ field.name }}").change(function()
   {
     readURL(this);

@@ -1,6 +1,8 @@
 {% set pagetitle = "Forum Index" %}
+{% set searchurl = path('forum_inforum_search', {'forumid': 'all'}) %}
 {% extends "layout.html.twig" %}
 {% block content %}
+{% include "searchnav.html.twig" %}
 {% for category in categories %}
 <div class="panel panel-category">
 	<div class="panel-heading">{{ category.title }}</div>

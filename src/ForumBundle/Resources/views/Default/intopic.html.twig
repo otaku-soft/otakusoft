@@ -1,5 +1,6 @@
 {% set pagetitle = "Topic - " ~ title %}
 {% extends "layout.html.twig" %}
+{% set lastpostid = "" %}
 {% block content %}
 <a href = "{{ path('forum_index') }}">Index</a> /
 <a href = "{{ path('forum_inforum', {'forumid': forum.id,'title':forum.title,'pagenumber':1}) }}">{{ forum.title }}</a><br/><br/>
@@ -12,8 +13,10 @@
 			</thread>
 			<tbody>
 				{% for post in posts %}
+				{% set lastpostid = post.id %}
 				 <tr>
 				     <td  align = "center">
+				     	<span id = "post{{ post.id }}"></span>
 				     	<label>{{ post.otaku.username }}</label><br/>
 				     	{% set avatar = 'avatars/' ~ post.otaku.avatar %}
 						<img src = "{{ asset(avatar) }}" alt = "bad image" style = "max-height:100px" /><br/>
@@ -32,11 +35,17 @@
 		</table>
 	</div>
 </div>
-<span id = "newpost"></span>
 {% if newpost %}
 <script>
 $( document ).ready(function() {
-$('html, body').animate({scrollTop: $("#newpost").offset().top}, 2000)
+$('html, body').animate({scrollTop: $("#post{{lastpostid}}").offset().top - 100}, 2000);
+});
+</script>
+{% endif %}
+{% if postid is defined %}
+<script>
+$( document ).ready(function() {
+$('html, body').animate({scrollTop: $("#post{{postid}}").offset().top - 100}, 2000);
 });
 </script>
 {% endif %}
@@ -73,7 +82,7 @@ $( document ).ready(function()
 		else
 		{
 			var querystring = $("#addPost").serialize();
-			querystring = querystring +"&message=" + tinyMCE.get('addPostMessage').getContent();
+			querystring = querystring +"&message=" + encodeURIComponent(tinyMCE.get('addPostMessage').getContent());
 			var page = "{{ path('forum_intopic_intopicNewPost') }}";
 	        $.post(page, querystring) 
 	        .done(function(data) 

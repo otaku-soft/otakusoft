@@ -1,10 +1,15 @@
 {% set pagetitle = title %}
+{% set searchurl = path('forum_inforum_search', {'forumid': forumid}) %}
 {% extends "layout.html.twig" %}
 {% set totalPagesOrg = totalPages %}
 {% set pagenumberOrg = pagenumber %}
 {% set pagenumber = 1 %}
+
 {% block content %}
 <a href = "{{ path('forum_index') }}">Return to Forum Index</a><br/><br/>
+
+{% include "searchnav.html.twig" %}
+
 <div class="panel panel-category">
 	<div class="panel-heading">Topics<span class = "pull-right">Topics:{{ totalTopics  }} Posts:{{ totalPosts }}</span></div>
 	<div class="panel-body {% if topics is not null %}nospace{% endif %}" >
@@ -83,7 +88,7 @@
 	<br/>
 	<input type = "text" id = "topicforumid" name = "forumid" value = "{{ forumid}}" style = "display:none" />
 	<input type = "text" id = "topiccategoryid" name = "categoryid" value = "{{ categoryid}}" style = "display:none" />
-	<textarea name="message" id = "topicmessage"  style = "height:200px;resize:none" placeholder = "Message" class="form-control" maxlength="65535" ></textarea>
+	<textarea  name="message" id = "topicmessage"  style = "height:200px;resize:none" placeholder = "Message" class="form-control" maxlength="65535" ></textarea>
 	<br/>
 	<button class = "btn btn-success">Submit</button>
 </form>
@@ -118,8 +123,9 @@ $( document ).ready(function()
 		else
 		{
 			var querystring = $("#addTopic").serialize();
-			querystring = querystring + "&message=" + tinyMCE.get('topicmessage').getContent();
+			querystring = querystring + "&message=" + encodeURIComponent(tinyMCE.get('topicmessage').getContent());
 			var page = "{{ path('forum_inforum_PostNewTopic') }}";
+			console.log(tinyMCE.get('topicmessage').getContent());
 			
 			
 	        $.post(page, querystring) 
@@ -128,12 +134,13 @@ $( document ).ready(function()
 	        	window.location = data;
 	        });
 	        
+	        
 		}
 	});
+
 });
 </script>
 {% endif %}
-
 {% endblock %}
 
 

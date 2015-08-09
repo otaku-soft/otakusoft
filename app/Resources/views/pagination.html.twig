@@ -1,8 +1,11 @@
 {% set originalPagination = pagination %}
+{% if ajaxContainer is not defined %}
+{% set ajaxContainer = '' %}
+{% endif %}
 {% if totalPages > 1 %}
   <ul class="pagination">
 
-  	<li><a href="{{ path(paginationPath, pagination) }}">First</a></li>
+  	<li><a href="javascript:gotopage('{{ path(paginationPath, pagination) }}','{{ ajaxContainer }}' )">First</a></li>
   	{% for i in (pagenumber-4)..(pagenumber+4) %}
   	{% if i > 0 and i <= totalPages %}
     {% if i == 1 %}
@@ -11,11 +14,11 @@
     {% set pagination = pagination|merge({'pagenumber': i}) %}
     {% endif %}
 
-    <li {% if i == pagenumber %}class = "active"{% endif %}><a href="{{ path(paginationPath, pagination) }}">{{ i }}</a></li>
+    <li {% if i == pagenumber %}class = "active"{% endif %}><a href="javascript:gotopage('{{ path(paginationPath, pagination) }}','{{ ajaxContainer }}')">{{ i }}</a></li>
     {% endif %}
 	{% endfor %}
 	{% set pagination = pagination|merge({'pagenumber': totalPages}) %}
-    <li><a href="{{ path(paginationPath, pagination) }}">Last</a></li>
+    <li><a href="javascript:gotopage('{{ path(paginationPath, pagination) }}','{{ ajaxContainer }}')">Last</a></li>
   </ul>
 </nav>
 {% endif %}

@@ -1,0 +1,23 @@
+{% set paginationPath = 'forum_inforum_search' %}
+{% set pagination = {'forumid': forumid,'search':search}%}
+{% set ajaxContainer = "searchDiv" %}
+<div id = "searchDiv">
+	<h1>Total Results: {{ count }}</h1>
+	{% include "pagination.html.twig" %}
+	{% for topic in topics %}
+
+	{% if topic.message is not null %}
+	<h3 style = "line-height:12px">Post</h3>
+	<h3><a href = "{{ path('forum_intopic', {'topicid': topic.id,'title':topic.title,'pagenumber':topic.pagenumber,'postid' :topic.postid}) }}">{{topic.title }}</a></h3>
+	<div class="panel panel-category">
+		<div class="panel-body">
+			{{ topic.message | raw }}
+		</div>
+	</div>
+	{% else %}
+	<h3 style = "line-height:12px">Topic</h3>
+	<h3><a href = "{{ path('forum_intopic', {'topicid': topic.id,'title':topic.title}) }}">{{topic.title }}</a></h3>
+	{% endif %}
+	{% endfor %}
+</div>
+

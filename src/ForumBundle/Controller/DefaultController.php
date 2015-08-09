@@ -55,6 +55,47 @@ class DefaultController extends Controller
         $postCount = $functionsClass->getCountById("posts",array("forumid" => $forumid));
         return array("topicCount" => $topicCount,"postCount" => $postCount);
     }
+    public function inforumSearchAction($forumid = "all")
+    {
+
+        $connection = $this->get('doctrine.dbal.default_connection');
+        $functionsClass = new functionsClass($this);
+        $message = urldecode($functionsClass->escapeString($this->get("request")->query->get("search")));
+        $pagenumber = $functionsClass->escapeString($this->get("request")->query->get("pagenumber",1));
+        $forumid = $functionsClass->escapeString($forumid);
+        $offset = $functionsClass->navigationOffset($pagenumber);
+
+        if ($forumid == "all")
+        $forumidsql = "";
+        else
+        $forumidsql = "AND topics.forumid = ".$forumid;
+        //$forumidsql =  " AND (topics.forumid=".$forumid." AND posts.forumid = ".$forumid.')';
+
+
+
+        $sql = 'SELECT topics.id as id, topics.title as title, posts.message as message,posts.id as postid  FROM topics LEFT join posts on topics.id = posts.topicid AND message LIKE "%'.$message.'%" WHERE (title LIKE "%'.$message.'%" OR message like "%'.$message.'%") '.$forumidsql.' LIMIT '.$offset.',10';
+
+        $topics = $connection->executeQuery($sql)->fetchAll();
+
+        foreach ($topics as &$topic)
+        {
+            if ($topic['message'] != null)
+            {
+                $sql = 'SELECT COUNT(*) as count FROM posts WHERE topicid = '.$topic['id'].' AND id <= '.$topic['postid'];
+                $count2 =  $connection->executeQuery($sql)->fetchAll();
+                $count2 = $count2[0]['count'];
+                $topic['pagenumber'] = $functionsClass->navigationTotalPages($count2);
+            }
+        }
+        $sql = 'SELECT COUNT(*) as count FROM topics LEFT join posts on topics.id = posts.topicid AND message LIKE "%'.$message.'%" WHERE (title LIKE "%'.$message.'%" OR message like "%'.$message.'%") '.$forumidsql;
+
+        $count =  $connection->executeQuery($sql)->fetchAll();
+
+        $count = $count[0]['count'];
+        $totalPages = $functionsClass->navigationTotalPages($count);
+
+        return $this->render('ForumBundle:Default:inforumsearch.html.twig',array("topics" => $topics,"count" => $count,"totalPages" => $totalPages,"pagenumber" => $pagenumber,"forumid" => $forumid,"search" => $message));
+    }
     public function inforumAction($forumid,$title)
     {
         $em = $this->getDoctrine()->getManager();
@@ -66,13 +107,18 @@ class DefaultController extends Controller
         $forum = $repository->findOneBy(array("id" => $forumid));
         $categoryid = $forum->categoryid;
         $offset = $functionsClass->navigationOffset($pagenumber);
-        $repository = $em->getRepository('classesclassBundle:topics');
+
         $totalPosts = $functionsClass->getCountById("posts",array("forumid" => $forumid));
         $totalTopics = $functionsClass->getCountById("topics",array("forumid" => $forumid));
         $totalPages = $functionsClass->navigationTotalPages($totalTopics);
+
+        $repository = $em->getRepository('classesclassBundle:topics');
         $topics = $repository->findBy(array("forumid" => $forumid),array("lastModified" => "DESC"),10,$offset);
+        
+        
         foreach ($topics as $topic)
         {
+
             $topic->replies = $functionsClass->getCountById("posts",array("topicid" => $topic->id)) -1;
             $topic->totalPages = $functionsClass->navigationTotalPages($topic->replies+1);
             $repository = $em->getRepository('classesclassBundle:otakus');
@@ -89,8 +135,17 @@ class DefaultController extends Controller
         }
         if (count($topics) == 0)
         $topics = null;
+        $searchByArray = array();
+
+
+        $functionsClass->addField($searchByArray,"title","Title");
+        $functionsClass->addField($searchByArray,"posts","Posts");
+
+        $searchBy = $searchByArray['title'];
         return $this->render('ForumBundle:Default:inforum.html.twig',array("topics" => $topics,"title" => $title,"forumid" => $forumid,"categoryid" => $categoryid,"totalPosts" => $totalPosts,
-            "totalTopics" => $totalTopics,"totalPages" => $totalPages,"pagenumber" => $pagenumber,"forum" => $forum) );
+            "totalTopics" => $totalTopics,"totalPages" => $totalPages,"pagenumber" => $pagenumber,"forum" => $forum,"searchByArray" => $searchByArray,"searchBy" => $searchBy) );
+
+    
     }
     public function inforumPostNewTopicAction()
     {
@@ -144,7 +199,10 @@ class DefaultController extends Controller
             $post->otaku = $repository->findOneBy(array("id" => $post->otakuid));
             $post->otaku->postCount = $functionsClass->getCountById("posts",array("otakuid" => $post->otakuid));
         }
-        return $this->render('ForumBundle:Default:intopic.html.twig',array("posts" => $posts,"title" => $title,"topic" => $topic,"forum" => $forum,"totalPages" => $totalPages,"pagenumber" => $pagenumber,"newpost" => $newpost));
+        $params = array("posts" => $posts,"title" => $title,"topic" => $topic,"forum" => $forum,"totalPages" => $totalPages,"pagenumber" => $pagenumber,"newpost" => $newpost);
+        if ($request->query->get("postid","") != "")
+        $params['postid'] = $request->query->get("postid","");
+        return $this->render('ForumBundle:Default:intopic.html.twig', $params);
     }
     public function intopicNewPostAction()
     {

@@ -130,6 +130,47 @@
         $("#emailSentAlert").show();
       });  
     }
+    function orderBy(description,value)
+    {
+      $("#orderByDescription").html(description);
+      $("#orderByValue").val(value);
+    }
+
+    function search(searchurl)
+    {
+      var page = searchurl + "?search=" +  encodeURIComponent($("#searchContent").val().trim());
+      var title = "Search Results";
+      var size = "large";
+      
+      if ($("#searchContent").val().trim() != "")
+      ajaxModal(page,title,size);
+      else
+      showAlert("Oh noes","You searched for nothing :(");
+    }
+
+    function gotopage(url,ajaxContainer)
+    {
+      if (ajaxContainer == "")
+      window.location = url;
+      else
+      {
+        $.get(url, function(data, status)
+        {
+          $("#" + ajaxContainer).html(data);
+        });
+      }
+    }
+    {% if searchurl is defined %}
+  $( document ).ready(function() 
+  {
+    $("#searchForm").submit(function(event)
+    {
+      event.preventDefault();
+      search('{{searchurl}}');
+    });
+  });
+  {% endif %}
     </script>
+  
 
   </head>
