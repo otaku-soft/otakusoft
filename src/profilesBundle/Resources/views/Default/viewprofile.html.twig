@@ -1,0 +1,53 @@
+{% set pagetitle = user.username ~ "'s Profile" %}
+{% extends "layout.html.twig" %}
+{% block content %}
+{% include "tabs.html.twig" %}
+<div class="tab-content list-group-item" >
+		<div role="tabpanel" class="tab-pane fade in active" id = "viewprofilePersonalInformation">
+			{% for field in fields %}
+			{% if  field.options.profiledisplay  is not defined %}
+			{% if field.options.type == "avatar" %}
+			{% set avatartype = "profile" %}
+			{% include "displayavatar.html.twig" %}
+			{% elseif field.options.type == "textarea"  or field.options.type == "text" %}
+			{% if field.name == "username" %}
+			
+		
+			{% else %}
+			<label>{{ field.description }}</label>
+			<br/>
+			{{ field.value }}<br/>
+			{% endif %}
+			{% endif %}
+			{% endif %}
+			{% endfor %}
+		</div>
+		<div role="tabpanel" class="tab-pane fade" id = "viewprofileTopics" >
+			
+		</div>
+		<div role="tabpanel" class="tab-pane fade" id = "viewprofilePosts">
+			
+		</div>
+</div>
+<script>
+$( document ).ready(function() 
+{
+	var page = "{{ path('profiles_gettopics') }}";
+	var querystring = "otakuid={{user.id}}";
+
+	$.get( page + "?" + querystring, function( data ) 
+	{
+		$("#viewprofileTopics").html(data);
+	});
+
+	var page = "{{ path('profiles_getposts') }}";
+	var querystring = "otakuid={{user.id}}";
+	$.get( page + "?" + querystring, function( data ) 
+	{
+		$("#viewprofilePosts").html(data);
+	});
+});
+</script>
+{% endblock %}
+
+

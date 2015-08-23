@@ -1,0 +1,10 @@
+profiles_viewprofile:
+    path:     /view/{id}
+    defaults: { _controller: profilesBundle:Default:viewProfile }
+
+profiles_gettopics:
+    path:     /gettopics/
+    defaults: { _controller: profilesBundle:Default:getTopics }
+profiles_getposts:
+    path:     /getposts/
+    defaults: { _controller: profilesBundle:Default:getPosts }

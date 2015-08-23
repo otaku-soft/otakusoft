@@ -17,9 +17,12 @@
 				 <tr>
 				     <td  align = "center">
 				     	<span id = "post{{ post.id }}"></span>
-				     	<label>{{ post.otaku.username }}</label><br/>
-				     	{% set avatar = 'avatars/' ~ post.otaku.avatar %}
-						<img src = "{{ asset(avatar) }}" alt = "bad image" style = "max-height:100px" /><br/>
+				     	<a href = "{{ path('profiles_viewprofile',{"id":post.otaku.id}) }}">
+					     	<label>{{ post.otaku.username }}</label><br/>
+					     	{% set avatartype = "profile" %}
+					     	{% set user = post.otaku %}
+					     	{% include "displayavatar.html.twig" %}
+				     	</a>
 						Posts: {{ post.otaku.postCount}}
 				     </td>
 				     <td width = "100%" >

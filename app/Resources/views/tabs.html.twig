@@ -1,0 +1,8 @@
+<ul class="nav nav-tabs">
+	{% for  tab in tabs %}
+	<li role="presentation"  {% if loop.index == 1 %}class = "active"{% endif %}><a href="#{{ tab.name }}" aria-controls="profile" role="tab" data-toggle="tab">{{ tab.description }} </a></li>
+	{% endfor %}
+</ul>
+<script>
+
+</script>

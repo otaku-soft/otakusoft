@@ -1,0 +1,4 @@
+services:
+#    profiles.example:
+#        class: profilesBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]

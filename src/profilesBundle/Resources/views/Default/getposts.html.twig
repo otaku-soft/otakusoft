@@ -1,0 +1,12 @@
+<h2>Total Posts: {{ count }}</h2>
+{% set  paginationPath = 'profiles_getposts' %}
+{% set pagination = {'otakuid': otakuid}%}
+{% set ajaxContainer = 'viewprofilePosts' %}
+
+{% include ("pagination.html.twig") %}
+{% for post in posts %}
+<h3><a href = "{{ path('forum_intopic', {'topicid': post.topic.id,'title':post.topic.title,'pagenumber':post.pagenumber,'postid':post.id}) }}">{{post.topic.title }}</a></h3>
+
+{{ post.message | raw }}<br/>
+{% if posts | length != loop.index %}<hr/>{% endif %}
+{% endfor %}
