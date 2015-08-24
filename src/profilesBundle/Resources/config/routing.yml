@@ -2,6 +2,14 @@ profiles_viewprofile:
     path:     /view/{id}
     defaults: { _controller: profilesBundle:Default:viewProfile }
 
+profiles_editprofile:
+    path:     /edit/
+    defaults: { _controller: profilesBundle:Default:editProfile }
+
+profiles_editprofile_save:
+    path:     /edit/save/
+    defaults: { _controller: profilesBundle:Default:editProfileSave }
+
 profiles_gettopics:
     path:     /gettopics/
     defaults: { _controller: profilesBundle:Default:getTopics }

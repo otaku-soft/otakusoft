@@ -24,18 +24,77 @@ class DefaultController extends Controller
         return $this->render('profilesBundle:Default:viewprofile.html.twig',array("user" => $otaku,"fields" => $this->fields,"tabs" => $tabs));
     }
 
+    public function editProfileAction()
+    {
+        $otakusClass = new otakusClass($this);
+        if ($otakusClass->isRole("USER"))
+        {
+            $em = $this->getDoctrine()->getManager();
+            $repository = $em->getRepository('classesclassBundle:otakus');
+            $otaku = $repository->findOneBy(array("id" => $otakusClass->getId()));
+            $this->fields($otaku);
+                    return $this->render('profilesBundle:Default:editprofile.html.twig',array("user" => $otaku,"fields" => $this->fields));
+
+        }
+        return new Response("not auth");
+    }
+    public function editProfileSaveAction()
+    {
+        $otakusClass = new otakusClass($this);
+        if ($otakusClass->isRole("USER"))
+        {
+            $em = $this->getDoctrine()->getManager();
+            $repository = $em->getRepository('classesclassBundle:otakus');
+            $otaku = $repository->findOneBy(array("id" => $otakusClass->getId()));
+
+            $request = Request::createFromGlobals();
+            $request->getPathInfo();
+
+            $arr =  $request->request->all();
+
+
+            while (list($key, $value) = each($arr))
+            {
+               
+                $otaku->$key = str_replace('../../','/',$value);
+
+            }
+
+
+            $files = $_FILES;
+            $path = "/var/www/web/avatars/";
+            $urlpath = "/avatars/";
+            
+            foreach ($files as $key =>$uploadedFile) 
+            {
+                if ($uploadedFile['name'] != "")
+                {
+                    $uploadedFile['name'] = filter_var($uploadedFile['name'],FILTER_SANITIZE_EMAIL);
+                    while(file_exists($path.$uploadedFile['name']))
+                    $uploadedFile['name'] = rand(0,9).$uploadedFile['name'];
+
+                    if (move_uploaded_file($uploadedFile["tmp_name"],
+                    $path.$uploadedFile["name"]))
+                    $otaku->avatar = $uploadedFile['name'];
+                }
+                
+            }
+            $em->flush();
+            return new Response("saved");
+        }
+        return new Response("not auth");
+    }
     function fields($otaku = null)
     {
     	$this->fields = array();
     	$functionsClass = new functionsClass($this);
-    	$functionsClass->addfield($this->fields,"username","Username",array("type" => "text","minlength" => 5));
     	$functionsClass->addfield($this->fields,"avatar","Avatar",array("type" => "avatar")); 
     	$functionsClass->addfield($this->fields,"email","Email", array("type" => "text","email" => true,"profiledisplay" => false));
     	$functionsClass->addfield($this->fields,"aboutme","About Me",array("type" => "textarea"));
     	$functionsClass->addfield($this->fields,"hobbies","Hobbies",array("type" => "textarea"));
     	$functionsClass->addfield($this->fields,"favoriteAnimes","Favorite Animes",array("type" => "textarea"));
     	$functionsClass->addfield($this->fields,"favoriteGames","Favorite Games",array("type" => "textarea"));
-    	$functionsClass->addfield($this->fields,"nyanPoints","Nyan Points",array("type" => "textarea"));
+    	$functionsClass->addfield($this->fields,"nyanPoints","Nyan Points",array("type" => "nyanPoints"));
     	if ($otaku  != null)
     	{
     		foreach ($this->fields as &$field)

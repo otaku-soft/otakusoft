@@ -1,0 +1,57 @@
+{% set pagetitle = "Edit Profile" %}
+{% extends "layout.html.twig" %}
+{% block content %}
+<form id = "saveProfileForm" method= "post" action = "{{ path('profiles_editprofile_save') }}" enctype="multipart/form-data">
+	<button type = "submit" class = "btn btn-success">Save</button><br/><br/>
+	{% for field in fields %}
+	{% if field.options.type == "textarea" %}
+	<label>{{ field.name }}</label>
+	<textarea style = "width:100%;height:200px;resize:none" name = "{{field.name }}" id = "saveProfile{{field.name }}">{{ field.value}} </textarea>
+	{% elseif field.options.type== "avatar" %}
+	<input type='file' name = "{{ field.name }}" id="editprofile{{ field.name }}" />
+	<img id="editprofile{{ field.name }}Image" src="{{ asset('avatars/' ~field.value) }}" alt="" style = "max-width:250px" />
+	<br/>
+	{% endif %}
+	{% endfor %}
+	<br/>
+	<button type = "submit" class = "btn btn-success">Save</button>
+</form>
+<script>
+$( document ).ready(function() 
+{
+  $("#editprofileavatar").change(function()
+  {
+    readURL(this);
+  });
+
+  $("#saveProfileForm").submit(function(event)
+  {
+    event.preventDefault();
+    {% for field in fields %}
+    {% if field.options.type == "textarea" %}
+    $("#saveProfile{{field.name}}").val(tinyMCE.get('saveProfile{{field.name}}').getContent());
+    {% endif %}
+    {% endfor %}
+    var formData = new FormData($("#saveProfileForm")[0]);
+    $.ajax(
+    {
+      url:$(this).attr("action"),
+      type: 'POST',
+      data: formData,
+      async: false,
+      success: function (data)
+      {
+        showAlert("Edit Profile","Profile Saved ^^");
+      },
+      cache: false,
+      contentType: false,
+      processData: false
+      
+    });
+
+  });
+
+})
+</script>
+{% endblock %}
+

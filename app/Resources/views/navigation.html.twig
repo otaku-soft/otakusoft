@@ -21,6 +21,8 @@
             {% endif %}
             <li><a href = "{{ path('forum_index') }}">Forum</a></li>
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            <li><a href = "{{ path('profiles_editprofile') }}">Profile</a></li>
+
             <li><a href = "{{ path('fos_user_security_logout') }}">Logout</a></li>
             {% else %}
             

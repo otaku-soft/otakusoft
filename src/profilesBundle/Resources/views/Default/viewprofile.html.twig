@@ -14,9 +14,9 @@
 			
 		
 			{% else %}
-			<label>{{ field.description }}</label>
+			<label>{{ field.description | raw}}</label>
 			<br/>
-			{{ field.value }}<br/>
+			{{ field.value | raw }}<br/>
 			{% endif %}
 			{% endif %}
 			{% endif %}

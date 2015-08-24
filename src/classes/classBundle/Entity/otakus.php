@@ -30,25 +30,25 @@ class otakus extends BaseUser
     /**
      * @var string
      *
-     * @ORM\Column(name="aboutme", type="string", length=100)
+     * @ORM\Column(name="aboutme", type="string", length=1000)
      */
     public $aboutme;
     /**
      * @var string
      *
-     * @ORM\Column(name="hobbies", type="string", length=100)
+     * @ORM\Column(name="hobbies", type="string", length=1000)
      */
     public $hobbies;
     /**
      * @var string
      *
-     * @ORM\Column(name="favoriteAnimes", type="string", length=100)
+     * @ORM\Column(name="favoriteAnimes", type="string", length=1000)
      */
     public $favoriteAnimes;
     /**
      * @var string
      *
-     * @ORM\Column(name="favoriteGames", type="string", length=100)
+     * @ORM\Column(name="favoriteGames", type="string", length=1000)
      */
     public $favoriteGames;
      /**
