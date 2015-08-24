@@ -178,6 +178,7 @@ class DefaultController extends Controller
         $pagenumber = $request->query->get("pagenumber",1);
         $newpost = false;
         $em = $this->getDoctrine()->getManager();
+        $otakusClass = new otakusClass($this);
         $functionsClass = new functionsClass($this);
         $totalPosts = $functionsClass->getCountById("posts",array("topicid" => $topicid));
         $totalPages = $functionsClass->navigationTotalPages($totalPosts);
@@ -197,7 +198,7 @@ class DefaultController extends Controller
         {
             $repository = $em->getRepository('classesclassBundle:otakus');
             $post->otaku = $repository->findOneBy(array("id" => $post->otakuid));
-            $post->otaku->postCount = $functionsClass->getCountById("posts",array("otakuid" => $post->otakuid));
+            $post->otaku->postCount = $otakusClass->getPostCount($post->otaku->id);
         }
         $params = array("posts" => $posts,"title" => $title,"topic" => $topic,"forum" => $forum,"totalPages" => $totalPages,"pagenumber" => $pagenumber,"newpost" => $newpost);
         if ($request->query->get("postid","") != "")

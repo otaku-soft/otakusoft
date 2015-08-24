@@ -23,6 +23,26 @@ class DefaultController extends Controller
     	$functionsClass->addfield($tabs,"viewprofilePosts","Posts");
         return $this->render('profilesBundle:Default:viewprofile.html.twig',array("user" => $otaku,"fields" => $this->fields,"tabs" => $tabs));
     }
+    public function indexAction()
+    {
+        $functionsClass = new functionsClass($this);
+        $em = $this->getDoctrine()->getManager();
+        $request = Request::createFromGlobals();
+        $request->getPathInfo();
+        $otakusClass = new otakusClass($this);
+        $pagenumber = $request->query->get("pagenumber",1);
+        $offset = $functionsClass->navigationOffset($pagenumber);
+        $repository = $em->getRepository('classesclassBundle:otakus');
+        $otakus = $repository->findBy(array(),array(),10,$offset);
+        foreach ($otakus as $otaku)
+        {
+            $otaku->postcount = $otakusClass->getPostCount($otaku->id);
+        }
+        $count = $functionsClass->getCountById("otakus");
+
+        $totalPages = $functionsClass->navigationTotalPages($count);
+        return $this->render('profilesBundle:Default:index.html.twig',array("otakus" => $otakus,"pagenumber" => $pagenumber,"totalPages" => $totalPages));
+    }
 
     public function editProfileAction()
     {
@@ -33,8 +53,7 @@ class DefaultController extends Controller
             $repository = $em->getRepository('classesclassBundle:otakus');
             $otaku = $repository->findOneBy(array("id" => $otakusClass->getId()));
             $this->fields($otaku);
-                    return $this->render('profilesBundle:Default:editprofile.html.twig',array("user" => $otaku,"fields" => $this->fields));
-
+            return $this->render('profilesBundle:Default:editprofile.html.twig',array("user" => $otaku,"fields" => $this->fields));
         }
         return new Response("not auth");
     }
@@ -51,16 +70,12 @@ class DefaultController extends Controller
             $request->getPathInfo();
 
             $arr =  $request->request->all();
-
-
             while (list($key, $value) = each($arr))
             {
                
                 $otaku->$key = str_replace('../../','/',$value);
 
             }
-
-
             $files = $_FILES;
             $path = "/var/www/web/avatars/";
             $urlpath = "/avatars/";

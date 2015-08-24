@@ -1,0 +1,38 @@
+{% set pagetitle = "Otaku List" %}
+{% extends "layout.html.twig" %}
+{% set avatartype = "profile" %}
+{% block content %}
+{% set pagination = {} %}
+{% set paginationPath = 'profiles_index' %}
+{% include "pagination.html.twig" %}
+<table class="table nospace" >
+	<thead>
+		<tr>
+			<th>User</th>
+			<th>Nyan Points</th>
+			<th>Posts</th>
+		</tr>
+	</thead>
+	<tbody>
+
+{% for user in otakus %}
+		<tr>
+			<td>
+				<a href = "{{ path('profiles_viewprofile',{"id":user.id}) }}">
+				{{ user.username }}<br/>
+				{% include "displayavatar.html.twig" %}
+				</a>
+
+			</td>
+			<td>
+				{{ user.nyanPoints }}
+			</td>
+			<td>
+				{{ user.postcount }}
+			</td>
+		</tr>
+{% endfor %}
+	</tbody>
+</table>
+{% include "pagination.html.twig" %}
+{% endblock %}

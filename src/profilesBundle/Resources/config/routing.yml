@@ -16,3 +16,7 @@ profiles_gettopics:
 profiles_getposts:
     path:     /getposts/
     defaults: { _controller: profilesBundle:Default:getPosts }
+
+profiles_index:
+    path:     /
+    defaults: { _controller: profilesBundle:Default:index }    

@@ -36,7 +36,7 @@ class functionsClass
         return $this->escapeString((int)ceil($count / 10));
     }    
 
-    public function getCountById($table,$parameters)
+    public function getCountById($table,$parameters = array())
     {
         $connection = $this->controller->get('doctrine.dbal.default_connection');
         $parameterString = "";
@@ -46,7 +46,9 @@ class functionsClass
             $parameterString = $parameterString ." AND ";
             $parameterString = $parameterString." ".$key."='".$this->escapeString($value)."'";
         }
-        $sql = "SELECT  COUNT(*) AS  total FROM ".$table."  WHERE ".$parameterString;
+        if ($parameterString != "")
+        $parameterString  =  "  WHERE ".$parameterString;
+        $sql = "SELECT  COUNT(*) AS  total FROM ".$table.$parameterString;
         $countArray = $connection->executeQuery($sql)->fetch();
         return (int)$countArray['total'];;
     }
