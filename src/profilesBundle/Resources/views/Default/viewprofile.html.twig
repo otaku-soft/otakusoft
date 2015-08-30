@@ -1,6 +1,9 @@
 {% set pagetitle = user.username ~ "'s Profile" %}
 {% extends "layout.html.twig" %}
 {% block content %}
+<div id = "addFriendContainer">
+
+</div>
 {% include "tabs.html.twig" %}
 <div class="tab-content list-group-item" >
 		<div role="tabpanel" class="tab-pane fade in active" id = "viewprofilePersonalInformation">
@@ -28,6 +31,20 @@
 		<div role="tabpanel" class="tab-pane fade" id = "viewprofilePosts">
 			
 		</div>
+		<div role="tabpanel" class="tab-pane fade" id = "viewprofileFriends">
+			{% set table = "friends" %}
+			{% set tablename = "friends" %}
+			{% set customquery = "friendlistview" %}
+			{% set template = "profilesBundle:Default:friendsview.html.twig" %}
+			{% set header = "<th>Id</th><th>Otaku</th>" %}
+			{% set types = "a.id,otakus.username" %}
+			{% set findby = "a.otakuid,^a.status" %}
+			{% set findbyvalues =  user.id~",1"  %}
+			{% set order = '"order": [[ 1, "asc" ]]' %}
+			{% include "searchdatatables.html.twig" %}
+
+		</div>
+
 </div>
 <script>
 $( document ).ready(function() 
@@ -46,7 +63,32 @@ $( document ).ready(function()
 	{
 		$("#viewprofilePosts").html(data);
 	});
+
+
+
+	loadFriendButton();
 });
+function loadFriendButton()
+{
+	var page = "{{ path('profiles_addFriendButton') }}";
+	var querystring = "friendotakuid={{user.id}}";
+	$.post(page, querystring).done(function(data) 
+    {
+		$("#addFriendContainer").html(data);
+	});	
+}
+function friendRequest(friendotakuid)
+{
+	var page = "{{ path('profiles_send_friend_request') }}";
+	var querystring = "id=" + friendotakuid;
+	$.post(page, querystring).done(function(data) 
+    {
+    	if (data == "Saved")
+		loadFriendButton()
+		else
+		showAlert("Oh noes",data);
+	});	
+}
 </script>
 {% endblock %}
 

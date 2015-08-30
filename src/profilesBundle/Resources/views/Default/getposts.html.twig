@@ -1,11 +1,12 @@
-<h2>Total Posts: {{ count }}</h2>
+<label>Total Posts: {{ count }}</label><br/>
 {% set  paginationPath = 'profiles_getposts' %}
 {% set pagination = {'otakuid': otakuid}%}
 {% set ajaxContainer = 'viewprofilePosts' %}
 
 {% include ("pagination.html.twig") %}
+<br/>
 {% for post in posts %}
-<h3><a href = "{{ path('forum_intopic', {'topicid': post.topic.id,'title':post.topic.title,'pagenumber':post.pagenumber,'postid':post.id}) }}">{{post.topic.title }}</a></h3>
+<label><a href = "{{ path('forum_intopic', {'topicid': post.topic.id,'title':post.topic.title,'pagenumber':post.pagenumber,'postid':post.id}) }}">{{post.topic.title }}</a></label>
 
 {{ post.message | raw }}<br/>
 {% if posts | length != loop.index %}<hr/>{% endif %}

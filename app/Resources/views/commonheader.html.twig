@@ -30,6 +30,8 @@
       <script src="{{asset('js/html5shiv.min.js') }}"></script>
       <script src="{{ asset('js/respond.min.js') }}"></script>
     <![endif]-->
+    <link href="{{ asset('css/jquery.dataTables.css') }}" rel="stylesheet">
+    <script src ="{{ asset('//cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js') }}"></script>
     <script>
     tinymce.init(
     {
@@ -152,14 +154,21 @@
       $("#orderByValue").val(value);
     }
 
-    function search(searchurl)
+    function search(searchurl,searchtype)
     {
       var page = searchurl + "?search=" +  encodeURIComponent($("#searchContent").val().trim());
       var title = "Search Results";
       var size = "large";
       
+
       if ($("#searchContent").val().trim() != "")
-      ajaxModal(page,title,size);
+      {
+        if (searchtype == "ajax")
+        ajaxModal(page,title,size);
+        if (searchtype == "page")  
+        window.location = page;
+      }
+      
       else
       showAlert("Oh noes","You searched for nothing :(");
     }
@@ -177,12 +186,15 @@
       }
     }
     {% if searchurl is defined %}
+    {% if searchtype is not defined %}
+    {% set searchtype = "ajax" %}
+    {% endif %}
   $( document ).ready(function() 
   {
     $("#searchForm").submit(function(event)
     {
       event.preventDefault();
-      search('{{searchurl}}');
+      search('{{searchurl}}','{{ searchtype }}');
     });
   });
   {% endif %}

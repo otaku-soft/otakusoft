@@ -11,14 +11,6 @@ classesclass_delete:
     path:  /delete/
     defaults: { _controller: classesclassBundle:Default:delete }
 
-classesclass_search:
-    path:  /search/
-    defaults: { _controller: classesclassBundle:Default:search }
-    
-classesclass_search:
-    path:  /search/
-    defaults: { _controller: classesclassBundle:Default:search }
-    
-classesclass_search_template:
-    path:  /searchtemplate/{options}
-    defaults: { _controller: classesclassBundle:Default:searchTemplate }
+classesclass_search_datatables:
+    path:  /search/datatables
+    defaults: { _controller: classesclassBundle:Default:searchDatatables }

@@ -1,0 +1,143 @@
+{% autoescape false %}
+
+{% if tablename is not defined %}
+{% set tablename = "searching" %}
+{% endif %}
+
+{% if header is not defined %}
+{% set header = "<th>Id</th>" %}
+{% endif %}
+
+{% if url is not defined %}
+{% set url = path('classesclass_search_datatables')  %}
+{% endif %}
+
+{% if table is not defined %}
+{% set table = "accountsUsers" %}
+{% endif %}
+
+
+{% if types is not defined %}
+{% set types = "a.id" %}
+{% endif %}
+
+{% if template is not defined %}
+{% set template = "classesclassBundle:Default:testjson.html.twig" %}
+{% endif %}
+
+{% if customquery is not defined %}
+{% set customquery = "" %}
+{% endif %}
+
+{% if findby is not defined %}
+{% set findby = "" %}
+{% endif %}
+
+{% if findbyvalues is not defined %}
+{% set findbyvalues = "" %}
+{% endif %}
+
+{% if searchEnabled is not defined %}
+{% set searchEnabled = "true" %}
+{% endif %}
+
+{% if extraparameters is not defined %}
+{% set extraparameters= "" %}
+{% endif %}
+
+{% if extracolumndefs is not defined %}
+{% set extracolumndefs = "" %}
+{% endif %}
+
+
+{% if order is not defined %}
+{% set order = '"order": [[ 0, "desc" ]]' %}
+{% endif %}
+
+{% if firstcolumnviewable is not defined %}
+{% set firstcolumnviewable = false %}
+{% endif %}
+
+{% set tablehtml = '<table id="'~ tablename~'" class="table table-striped"  ><thead><tr>'~header~'</tr></thead></table>' %}
+
+<div id  = "{{ tablename }}Container">
+
+    {{ tablehtml | raw}}
+
+</div>
+
+<script>
+var {{ tablename }}Table = "";
+//rlftip
+//lf<<rt><tr>ip
+function startTable{{ tablename }}()
+{
+    {{ tablename }}Table = $('#{{ tablename }}').dataTable( 
+    {
+        "processing": true,
+        "serverSide": true,
+        "bFilter": {{ searchEnabled }},
+        {{ order }},
+        "bStateSave": false,
+        "ajax": 
+        {
+            "url": "{{ url }}",
+            "type": "POST",
+            data: { table:"{{ table }}",types:"{{ types }}",template:"{{ template }}",customquery:"{{ customquery }}",findby: "{{ findby }}",findbyvalues:"{{ findbyvalues }}"{{ extraparameters | raw }}}
+
+        },
+        "dom": 'rlftip',
+        "columnDefs": 
+        [
+            {
+                {% if firstcolumnviewable %}
+                "targets": [ 0 ],
+                "visible": true,
+                "searchable": true,
+                "sortable":true                
+                {% else %}
+                "targets": [ 0 ],
+                "visible": false,
+                "searchable": false,
+                "sortable":true
+                {% endif %}
+            }
+            {% if unsearchableArray is defined %}
+            {% for unsearchable in unsearchableArray %}
+            ,
+            {
+                "targets": [ {{ unsearchable }} ],
+                "visible": true,
+                "searchable": false,
+                "sortable":false
+            }
+            {% endfor %}
+            {% endif %}
+            {{ extracolumndefs | raw }}
+        ],
+       "oLanguage": 
+        {
+                    "sProcessing": ''
+
+        },
+        
+        
+    } );
+}
+
+function restartTable{{ tablename }}()
+{
+    {{ tablename }}Table.fnDestroy();
+    $( "#{{ tablename }}" ).remove();
+    $("#{{ tablename }}Container").html('{{ tablehtml | raw}}');
+
+    startTable{{ tablename }}();
+
+}
+$(document).ready(function() 
+{
+    startTable{{ tablename }}();
+});    
+
+</script>
+{% endautoescape %}

@@ -1,0 +1,5 @@
+{% for account in items %}
+{% if loop.index > 1 %},{% endif %}
+[{{ account.id }},{{ account.id }}]
+{% endfor %}
+

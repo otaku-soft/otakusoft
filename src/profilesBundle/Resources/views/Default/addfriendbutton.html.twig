@@ -1,0 +1,8 @@
+{% if friend is null %}
+<button type = "button" class = "btn btn-success" onclick = "friendRequest('{{ friendotakuid}}')">Add Friend</button>
+<br/><br/>
+{% elseif friend.status == 0 %}
+<div class="alert alert-warning" role="alert">Friend Request Pending</div>
+{% elseif friend.status == 1 %}
+<div class="alert alert-success" role="alert">Friend</div>
+{% endif %}

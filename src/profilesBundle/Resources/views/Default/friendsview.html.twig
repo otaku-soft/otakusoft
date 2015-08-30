@@ -1,0 +1,5 @@
+{% for user in items %}
+{% if loop.index > 1 %},{% endif %}
+[{{ user.id }},^^V*{% include "inlineavatar.html.twig" %}^^V*]
+{% endfor %}
+

@@ -17,6 +17,28 @@ profiles_getposts:
     path:     /getposts/
     defaults: { _controller: profilesBundle:Default:getPosts }
 
+profiles_getfriends:
+    path:     /getfriends/
+    defaults: { _controller: profilesBundle:Default:getFriends }
+
+
 profiles_index:
     path:     /
     defaults: { _controller: profilesBundle:Default:index }    
+
+profiles_send_friend_request:
+    path:     /sendfriendrequest/
+    defaults: { _controller: profilesBundle:Default:sendFriendRequest }  
+
+profiles_remove_friend:
+    path:     /removefriend/
+    defaults: { _controller: profilesBundle:Default:removeFriend }  
+
+profiles_addFriendButton:
+    path:     /addFriendButton/
+    defaults: { _controller: profilesBundle:Default:addFriendButton }  
+
+
+profiles_make_friend_data:
+    path:     /makedata/
+    defaults: { _controller: profilesBundle:Default:fillInFriendData } 

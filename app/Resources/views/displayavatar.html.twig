@@ -6,8 +6,9 @@
 
 {% if avatartype == "inline" %}
 	<a href = "{{ path('profiles_viewprofile',{"id":user.id}) }}">
-	{{  user.username}} 
-	<img src = "{{ asset(avatar) }}" alt = "" style = "max-height:20px" /></a>
+	{{  user.username}}  
+
+	<img src = "{{ asset(avatar) }}" alt = "" style = "max-height:20px" /></a><br/>
 {% endif %}
 {% if avatartype == "profile" %}
 	<img src = "{{ asset(avatar) }}" alt = "" style = "max-height:100px" />

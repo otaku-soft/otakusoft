@@ -79,4 +79,34 @@ class functionsClass
         }
         return $array2;
     }
+
+    public function datatablesFilterData(&$items)
+    {
+        foreach ($items as &$item)
+        {
+            foreach ($item as &$value )
+            {   
+
+                if (is_string($value))
+                {
+                    $value = str_replace("\\","",$value);
+                    //$value = str_replace("/","",$value);
+                }
+            }
+        }
+    }
+
+    public function datatablesFilterJson(&$jsoncontent)
+    {
+        $jsoncontent = str_replace(" ","^//blankspace//^",$jsoncontent);
+        $jsoncontent = filter_var($jsoncontent, FILTER_SANITIZE_URL);
+        $jsoncontent = str_replace("^//blankspace//^"," ",$jsoncontent);
+        $jsoncontent = str_replace("\&quot;","&quot;",$jsoncontent);
+        $jsoncontent = str_replace("\'","'",$jsoncontent);
+        $jsoncontent = str_replace("\'","'",$jsoncontent);
+        $jsoncontent = str_replace('"','\"',$jsoncontent);
+        $jsoncontent = str_replace('^^V*','"',$jsoncontent);
+        
+
+    }
 }

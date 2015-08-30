@@ -1,38 +1,46 @@
+{% set searchurl = path('profiles_index') %}
+{% set searchtype = 'page' %}
 {% set pagetitle = "Otaku List" %}
 {% extends "layout.html.twig" %}
-{% set avatartype = "profile" %}
 {% block content %}
+{% if search == "" %}
 {% set pagination = {} %}
+{% else %}
+{% set pagination = {'search':search } %}
+{% endif %}
 {% set paginationPath = 'profiles_index' %}
-{% include "pagination.html.twig" %}
-<table class="table nospace" >
-	<thead>
-		<tr>
-			<th>User</th>
-			<th>Nyan Points</th>
-			<th>Posts</th>
-		</tr>
-	</thead>
-	<tbody>
+{% include "searchnav.html.twig" %}
+{% if count > 0 %}
+<div class="panel panel-category">
+	<div class="panel-heading">Total: {{ count }}</div>
+		<table class="table nospace" >
+			<thead>
+				<tr>
+					<th>User</th>
+					<th>Nyan Points</th>
+					<th>Posts</th>
+				</tr>
+			</thead>
+			<tbody>
 
-{% for user in otakus %}
-		<tr>
-			<td>
-				<a href = "{{ path('profiles_viewprofile',{"id":user.id}) }}">
-				{{ user.username }}<br/>
-				{% include "displayavatar.html.twig" %}
-				</a>
-
-			</td>
-			<td>
-				{{ user.nyanPoints }}
-			</td>
-			<td>
-				{{ user.postcount }}
-			</td>
-		</tr>
-{% endfor %}
-	</tbody>
-</table>
+		{% for user in otakus %}
+				<tr>
+					<td>
+						{% include "inlineavatar.html.twig" %}
+					</td>
+					<td>
+						{{ user.nyanPoints }}
+					</td>
+					<td>
+						{{ user.postcount }}
+					</td>
+				</tr>
+		{% endfor %}
+			</tbody>
+		</table>
+</div>
+{% else %}
+No Otakus here!
+{% endif %}
 {% include "pagination.html.twig" %}
 {% endblock %}

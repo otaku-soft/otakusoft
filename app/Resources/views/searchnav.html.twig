@@ -1,9 +1,13 @@
 <form id = "searchForm">
-  <div class="input-group input-group-lg">
-    <span class="input-group-btn">
-      <button class="btn btn-default" type="submit">Go!</button>
-    </span>
-    <input type="text" class="form-control" placeholder="Search for..." id = "searchContent">
-  </div>
+	<div class="input-group input-group-lg">
+		<span class="input-group-btn">
+			<button class="btn btn-default" type="submit">Go!</button>
+		</span>
+		<input type="text" class="form-control" placeholder="Search for..." {% if search is defined %}value = "{{ search }}"{% endif %} id = "searchContent">
+	</div>
+	<div style = "line-height:10px">
+		<br/>
+		{% if searchtype is defined and  searchtype == "page" %}<a href = "{{  searchurl }}">Clear Search</a>{% endif %}
+	</div>
 </form>
 <br/>

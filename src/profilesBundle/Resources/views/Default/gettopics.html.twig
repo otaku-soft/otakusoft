@@ -1,10 +1,11 @@
-<h2>Total Topics: {{ count }}</h2>
 {% set  paginationPath = 'profiles_gettopics' %}
 {% set pagination = {'otakuid': otakuid}%}
 {% set ajaxContainer = 'viewprofileTopics' %}
+<label>Total Topics: {{ count }}</label><br/>
 
 {% include ("pagination.html.twig") %}
+<br/>
+
 {% for topic in topics %}
-<h3><a href = "{{ path('forum_intopic', {'topicid': topic.id,'title':topic.title}) }}">{{topic.title }}</a></h3>
+<label><a href = "{{ path('forum_intopic', {'topicid': topic.id,'title':topic.title}) }}">{{topic.title }}</a></label><br/>
 {% endfor %}
-{% include ("pagination.html.twig") %}

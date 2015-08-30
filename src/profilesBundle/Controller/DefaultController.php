@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use classes\classBundle\Classes\otakusClass;
 use classes\classBundle\Classes\functionsClass;
+use classes\classBundle\Entity\friends;
 class DefaultController extends Controller
 {
 	public $fields;
@@ -21,12 +22,40 @@ class DefaultController extends Controller
     	$functionsClass->addfield($tabs,"viewprofilePersonalInformation","Info");
     	$functionsClass->addfield($tabs,"viewprofileTopics","Topics Started");
     	$functionsClass->addfield($tabs,"viewprofilePosts","Posts");
+        $functionsClass->addfield($tabs,"viewprofileFriends","Friends");     
         return $this->render('profilesBundle:Default:viewprofile.html.twig',array("user" => $otaku,"fields" => $this->fields,"tabs" => $tabs));
+    }
+    public function addFriendButtonAction()
+    {
+        $otakusClass = new otakusClass($this);
+        $request = Request::createFromGlobals();
+        $request->getPathInfo();
+        if ($otakusClass->isRole("USER") && $otakusClass->getId() != $request->request->get('friendotakuid',""))
+        {
+            $repository = $this->getDoctrine()->getManager()->getRepository('classesclassBundle:friends');
+            $friend = $repository->findOneBy(array("otakuid" => $otakusClass->getId(),"friendotakuid" => $request->request->get('friendotakuid',"")));
+            return $this->render('profilesBundle:Default:addfriendbutton.html.twig',array("friend" => $friend,"friendotakuid" => $request->request->get('friendotakuid',"")));
+        }
+        return new Response("");
+    }
+    public function fillInFriendDataAction()
+    {
+        for ($i = 1; $i < 1000; $i++)
+        {
+            $profiles = new friends();
+            $profile->otakuid = $i;
+            $profile->friendotakuid = $i;
+            $profile->status = $i;
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($profiles);
+            $em->flush();
+        }
     }
     public function indexAction()
     {
         $functionsClass = new functionsClass($this);
         $em = $this->getDoctrine()->getManager();
+        $connection = $this->get('doctrine.dbal.default_connection');
         $request = Request::createFromGlobals();
         $request->getPathInfo();
         $otakusClass = new otakusClass($this);
@@ -34,28 +63,106 @@ class DefaultController extends Controller
         $offset = $functionsClass->navigationOffset($pagenumber);
         $repository = $em->getRepository('classesclassBundle:otakus');
         $otakus = $repository->findBy(array(),array(),10,$offset);
-        foreach ($otakus as $otaku)
+
+        $search = $functionsClass->escapeString($request->query->get("search",""));
+        $whereSql = "";
+        if ($search != "")
+        $whereSql = "WHERE username LIKE '%".$search."%'";
+
+        $sql = 'SELECT * FROM otakus '.$whereSql.' LIMIT '.$offset.',10';
+        $otakus = $connection->executeQuery($sql)->fetchAll();
+        foreach ($otakus as &$otaku)
         {
-            $otaku->postcount = $otakusClass->getPostCount($otaku->id);
+            $otaku['postcount'] = $otakusClass->getPostCount($otaku['id']);
         }
-        $count = $functionsClass->getCountById("otakus");
+        $sql = 'SELECT COUNT(*) as total FROM otakus '.$whereSql;
+        $data = $connection->executeQuery($sql)->fetch();
+
+        $count = $data['total'];
 
         $totalPages = $functionsClass->navigationTotalPages($count);
-        return $this->render('profilesBundle:Default:index.html.twig',array("otakus" => $otakus,"pagenumber" => $pagenumber,"totalPages" => $totalPages));
+        return $this->render('profilesBundle:Default:index.html.twig',array("otakus" => $otakus,"pagenumber" => $pagenumber,"totalPages" => $totalPages,"search" => $search,"count" => $count));
     }
 
     public function editProfileAction()
     {
         $otakusClass = new otakusClass($this);
+        $functionsClass = new functionsClass($this);
         if ($otakusClass->isRole("USER"))
         {
             $em = $this->getDoctrine()->getManager();
             $repository = $em->getRepository('classesclassBundle:otakus');
             $otaku = $repository->findOneBy(array("id" => $otakusClass->getId()));
             $this->fields($otaku);
-            return $this->render('profilesBundle:Default:editprofile.html.twig',array("user" => $otaku,"fields" => $this->fields));
+            $tabs = array();
+            $functionsClass->addfield($tabs,"editprofilePersonal","Personal");
+            $functionsClass->addfield($tabs,"editprofileFriends","Friends");
+            $functionsClass->addfield($tabs,"editprofileFriendRequests","Friend Requests");
+            return $this->render('profilesBundle:Default:editprofile.html.twig',array("user" => $otaku,"fields" => $this->fields,"tabs" => $tabs));
         }
         return new Response("not auth");
+    }
+    public function sendFriendRequestAction()
+    {
+        $otakusClass = new otakusClass($this);
+        $request = Request::createFromGlobals();
+        $request->getPathInfo();
+        if ($otakusClass->isRole("USER"))
+        {
+            $em = $this->getDoctrine()->getManager();
+            $repository = $em->getRepository('classesclassBundle:friends');
+            $checkFriendRequest = $repository->findOneBy(array("otakuid" => $otakusClass->getId(),"friendotakuid" => $request->request->get("id") ));
+            $checkFriendRequest2 = $repository->findOneBy(array("otakuid" =>$request->request->get("id"),"friendotakuid" => $otakusClass->getId() ));
+            
+            if ($checkFriendRequest2 != null)
+            {
+                $friends = new friends();
+                $friends->otakuid = $otakusClass->getId();
+                $friends->friendotakuid = $request->request->get("id");
+                $friends->status = 1;
+                $em->persist($friends);
+                $checkFriendRequest2->status = 1;
+                $em->flush();
+                return new Response('Saved');
+            }
+            if ($checkFriendRequest == null)
+            {
+                $friends = new friends();
+                $friends->otakuid = $otakusClass->getId();
+                $friends->friendotakuid = $request->request->get("id");
+                $friends->status = 0;
+                $em->persist($friends);
+                $em->flush();
+                return new Response('Saved');
+            }
+            else
+            return new Response('Friend Request Already Submitted');
+
+        }
+        return new Response("not auth");
+    }
+    public function removeFriendAction()
+    {
+        $otakusClass = new otakusClass($this);
+        $request = Request::createFromGlobals();
+        $request->getPathInfo();
+        if ($otakusClass->isRole("USER"))
+        {
+            $em = $this->getDoctrine()->getManager();
+            $repository = $em->getRepository('classesclassBundle:friends');
+            $checkFriendRequest = $repository->findOneBy(array("otakuid" => $otakusClass->getId(),"friendotakuid" => $request->request->get("id") ));
+            $checkFriendRequest2 = $repository->findOneBy(array("otakuid" =>$request->request->get("id"),"friendotakuid" => $otakusClass->getId() ));
+            if ($checkFriendRequest != null)
+            {
+                $em->remove($checkFriendRequest);
+            }
+            if ($checkFriendRequest2 != null)
+            {
+                $em->remove($checkFriendRequest2);
+            }
+            $em->flush();
+        }
+        return new Response("");
     }
     public function editProfileSaveAction()
     {
@@ -168,5 +275,9 @@ class DefaultController extends Controller
         $totalPages = $functionsClass->navigationTotalPages($count);
 
         return $this->render('profilesBundle:Default:getposts.html.twig',array("posts" => $posts,"totalPages" => $totalPages,"otakuid" => $otakuid,"pagenumber" => $pagenumber,"count" => $count));
+    }
+    function getFriendsAction()
+    {
+        return new Response("friends");
     }
 }
