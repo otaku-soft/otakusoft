@@ -1,0 +1,26 @@
+{% set  paginationPath = 'profiles_getmessages' %}
+{% set pagination = {'otakuid': otakuid}%}
+{% set ajaxContainer = 'viewprofileVistorMessagesAjax' %}
+{% if messages | length > 0 %}
+<label>Page: </label>{{ pagenumber}}
+<br/>
+{% else %}
+No Messages Yet!
+{% endif %}
+{% for message in messages %}
+{% set dateField = message.dateCreated %}
+<label>Posted on </label><br/>{% include "displaydate.html.twig" %}<br/>
+{% set user = message.otaku %}
+{% set avatartype = "profile" %}
+{% include "displayavatar.html.twig" %}
+
+{{ message.message | raw }}<br/>
+{% if messages | length != loop.index %}<hr/>{% endif %}
+{% endfor %}
+{% include ("pagination.html.twig") %}
+<script>
+$( document ).ready(function() 
+{
+scrollToMessages();
+});
+</script>

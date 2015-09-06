@@ -24,7 +24,7 @@ class functionsClass
         $arr =  $request->request->all();
         while (list($key, $value) = each($arr))
         {
-            $object->$key = $value;
+            $object->$key = str_replace('../../','/',$value);
         }
     }
     public function navigationOffset($pagenumber)

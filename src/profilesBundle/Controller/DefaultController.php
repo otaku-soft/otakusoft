@@ -8,22 +8,30 @@ use Symfony\Component\HttpFoundation\Response;
 use classes\classBundle\Classes\otakusClass;
 use classes\classBundle\Classes\functionsClass;
 use classes\classBundle\Entity\friends;
+use classes\classBundle\Entity\visitorMessages;
 class DefaultController extends Controller
 {
 	public $fields;
     public function viewProfileAction($id)
     {
     	$em = $this->getDoctrine()->getManager();
+        $otakusClass = new otakusClass($this);
     	$repository = $em->getRepository('classesclassBundle:otakus');
     	$otaku = $repository->findOneBy(array("id" => $id));
+        $friendotakuid = $otakusClass->getId();
+        $repository = $em->getRepository('classesclassBundle:friends');
+        $friend = $repository->findOneBy(array("otakuid" => $id,"friendotakuid" => $friendotakuid));
+        if ($friend != null)
+        $friend = true;
     	$this->fields($otaku);
     	$functionsClass = new functionsClass($this);
     	$tabs = array();
     	$functionsClass->addfield($tabs,"viewprofilePersonalInformation","Info");
     	$functionsClass->addfield($tabs,"viewprofileTopics","Topics Started");
     	$functionsClass->addfield($tabs,"viewprofilePosts","Posts");
-        $functionsClass->addfield($tabs,"viewprofileFriends","Friends");     
-        return $this->render('profilesBundle:Default:viewprofile.html.twig',array("user" => $otaku,"fields" => $this->fields,"tabs" => $tabs));
+        $functionsClass->addfield($tabs,"viewprofileFriends","Friends");   
+        $functionsClass->addfield($tabs,"viewprofileVistorMessages","Visitor Messages");   
+        return $this->render('profilesBundle:Default:viewprofile.html.twig',array("user" => $otaku,"fields" => $this->fields,"tabs" => $tabs,"friend" => $friend));
     }
     public function addFriendButtonAction()
     {
@@ -275,6 +283,46 @@ class DefaultController extends Controller
         $totalPages = $functionsClass->navigationTotalPages($count);
 
         return $this->render('profilesBundle:Default:getposts.html.twig',array("posts" => $posts,"totalPages" => $totalPages,"otakuid" => $otakuid,"pagenumber" => $pagenumber,"count" => $count));
+    }
+    function getVisitorsMessagesAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $functionsClass = new functionsClass($this);
+        $connection = $this->get('doctrine.dbal.default_connection');
+        $request = Request::createFromGlobals();
+        $request->getPathInfo();
+        $pagenumber = $request->query->get("pagenumber",1);
+        $otakuid = $request->query->get("otakuid",0);
+
+        $offset = $functionsClass->navigationOffset($pagenumber);
+        $repository = $em->getRepository('classesclassBundle:visitorMessages');
+        $messages = $repository->findBy(array("otakuid" => $otakuid),array("id" => "DESC"),10,$offset);
+        $repository = $em->getRepository('classesclassBundle:otakus');
+        foreach ($messages as &$message)
+        {
+            $message->otaku =  $repository->findOneBy(array("id" => $message->friendotakuid));
+        }
+        $count = $functionsClass->getCountById("visitorMessages",array("otakuid" => $otakuid));
+        $totalPages = $functionsClass->navigationTotalPages($count);
+
+        return $this->render('profilesBundle:Default:getvisitormessages.html.twig',array("messages" => $messages,"totalPages" => $totalPages,"otakuid" => $otakuid,"pagenumber" => $pagenumber,"count" => $count));
+    }
+    function addVisitorMessageAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $otakusClass = new otakusClass($this);
+        $visitorMessages = new visitorMessages();
+        $friendotakuid = $otakusClass->getId();
+        $request = Request::createFromGlobals();
+        $request->getPathInfo();
+        $otakuid = $request->request->get("otakuid",0);
+        $message= str_replace('../../','/',$request->request->get("message",0));
+        $visitorMessages->otakuid = $otakuid;
+        $visitorMessages->friendotakuid = $friendotakuid;
+        $visitorMessages->message = $message;
+        $em->persist($visitorMessages);
+        $em->flush();
+        return new Response("");
     }
     function getFriendsAction()
     {

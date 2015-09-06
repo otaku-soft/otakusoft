@@ -32,17 +32,8 @@
     <![endif]-->
     <link href="{{ asset('css/jquery.dataTables.css') }}" rel="stylesheet">
     <script src ="{{ asset('//cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js') }}"></script>
+    {% include "tinymce.html.twig" %}
     <script>
-    tinymce.init(
-    {
-      selector: "textarea",
-      plugins: [
-        "advlist autolink lists link image charmap print preview anchor",
-        "searchreplace visualblocks code ",
-        "insertdatetime media table contextmenu paste","emoticons"
-      ],
-      toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | emoticons"
-    });
     var errorMessage = "";
     var appendText = "";
     function showAlert(title,message,titleClass,messageClass)
@@ -198,7 +189,21 @@
     });
   });
   {% endif %}
+  var countz = 0;
+  function sendprivatemessage(id,messageid)
+  {
+    if(typeof(messageid)==='undefined')
+    messageid = -1; 
+    tinyMCE.remove();
+    ajaxModal('{{ path('profiles_messages_send_message') }}?id=' + id + "&messageid=" + messageid,'Send Message','large');
+  }
+    $(document).on('focusin', function(e) {
+    if ($(e.target).closest(".mce-window").length) {
+        e.stopImmediatePropagation();
+    }
+});
     </script>
   
+
 
   </head>

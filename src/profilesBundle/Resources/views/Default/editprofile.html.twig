@@ -9,7 +9,7 @@
 <div class="tab-content list-group-item" >
   <div role="tabpanel" class="tab-pane fade in active" id = "editprofilePersonal">
     <form id = "saveProfileForm" method= "post" action = "{{ path('profiles_editprofile_save') }}" enctype="multipart/form-data">
-    	<button type = "submit" class = "btn btn-success">Save</button><br/><br/>
+    	<button type = "submit" class = "btn btn-primary">Save</button><br/><br/>
     	{% for field in fields %}
     	{% if field.options.type == "textarea" %}
     	<label>{{ field.name }}</label>
@@ -21,7 +21,7 @@
     	{% endif %}
     	{% endfor %}
     	<br/>
-    	<button type = "submit" class = "btn btn-success">Save</button>
+    	<button type = "submit" class = "btn btn-primary">Save</button>
     </form>
   </div>
   <div role="tabpanel" class="tab-pane fade" id = "editprofileFriends" >

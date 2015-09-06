@@ -1,7 +1,6 @@
 {% if avatartype is not defined %}
 	{% set avatartype = "inline" %}
 {% endif %}
-
 {% set avatar = 'avatars/' ~ user.avatar %}
 
 {% if avatartype == "inline" %}

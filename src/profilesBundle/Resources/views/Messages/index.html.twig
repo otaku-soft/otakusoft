@@ -1,0 +1,28 @@
+{% set pagetitle = "Messages" %}
+{% extends "layout.html.twig" %}
+{% block content %}
+{% include "tabs.html.twig" %}
+<div class="tab-content list-group-item" >
+	<div role="tabpanel" class="tab-pane fade in active" id = "sendmessageInbox">
+		{% set table = "privateMessages" %}
+		{% set tablename = "privateMessagesInbox" %}
+		{% set findby = "a.tootakuid" %}
+		{% set customquery = "inboxmessages" %}
+		{% set template = "profilesBundle:Messages:Search/inbox.html.twig" %}
+		{% set header = "<th>Id</th><th>Title</th><th>Message</th><th>Sent to</th><th>Date</th><th>Reply</th>" %}
+
+		{% set types = "a.id,a.title,a.message,otakus.username,a.dateCreated" %}
+		{% set findbyvalues = id %}
+
+		{% include "searchdatatables.html.twig" %}
+	</div>
+	<div role="tabpanel" class="tab-pane fade" id = "sendmessageSent" >
+		{% set tablename = "privateMessagesSent" %}
+		{% set findby = "a.sendotakuid" %}
+		{% set customquery = "sentmessages" %}
+		{% set header = "<th>Id</th><th>Title</th><th>Message</th><th>Sent to</th><th>Date</th>" %}
+		{% set template = "profilesBundle:Messages:Search/send.html.twig" %}
+		{% include "searchdatatables.html.twig" %}
+	</div>
+</div>
+{% endblock %}

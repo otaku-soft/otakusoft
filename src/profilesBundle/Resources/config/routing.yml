@@ -17,9 +17,17 @@ profiles_getposts:
     path:     /getposts/
     defaults: { _controller: profilesBundle:Default:getPosts }
 
-profiles_getfriends:
-    path:     /getfriends/
-    defaults: { _controller: profilesBundle:Default:getFriends }
+profiles_getmessages:
+    path:     /getmessages/
+    defaults: { _controller: profilesBundle:Default:getVisitorsMessages}
+
+profiles_getmessages:
+    path:     /getmessages/
+    defaults: { _controller: profilesBundle:Default:getVisitorsMessages}
+
+profiles_addvisitormessage:
+    path:     /addVisitorMessage/
+    defaults: { _controller: profilesBundle:Default:addVisitorMessage }
 
 
 profiles_index:
@@ -42,3 +50,15 @@ profiles_addFriendButton:
 profiles_make_friend_data:
     path:     /makedata/
     defaults: { _controller: profilesBundle:Default:fillInFriendData } 
+
+profiles_messages:
+    path:     /messages/
+    defaults: { _controller: profilesBundle:Messages:index } 
+
+profiles_messages_send_message:
+    path:     /messages/sendmessage/
+    defaults: { _controller: profilesBundle:Messages:sendMessage } 
+
+profiles_messages_send_message_saved:
+    path:     /messages/sendmessage/saved/
+    defaults: { _controller: profilesBundle:Messages:sendMessagesSaved } 

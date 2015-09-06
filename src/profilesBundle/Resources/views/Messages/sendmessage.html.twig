@@ -1,0 +1,51 @@
+{% include "tinymce.html.twig" %}
+
+{% if message != "" %}
+<br/>
+<div class="panel panel-default">
+  <div class="panel-heading">Replying to {{ title }} <span style = "float:right">{%include "displayavatar.html.twig" %}</span></div>
+  <div class="panel-body">
+    {{ message | raw}}
+  </div>
+</div>
+{% endif %}
+{% set alertContent = "Message Sent" %}
+{% include "alert.html.twig" %}
+{% set alertId = "emptyMessageAlert" %}
+{% set alertType = "danger" %}    
+
+{% set alertContent = "Both Title and Message must be filled out" %}
+{% include "alert.html.twig" %}
+<form id = "sendMessageForm">
+	<label>Title</label>
+	<input type = "text" class = "form-control" id = "sendTitle" name = "title" value = "{{ title }}" />
+	<label>Message</label>
+	<input type = "text" name = "tootakuid" value = "{{ id }}" style = "display:none" />
+	<textarea name = "message" id = "sendMessage" ></textarea>
+	<br/>
+	<button type = "submit" class = "btn btn-success">Submit</button>
+</form>
+
+<script>
+$( document ).ready(function() 
+{
+	$("#sendMessageForm").submit(function(event)
+	{
+		event.preventDefault();
+		tinyMCE.triggerSave();
+		if ($("#sendTitle").val() == "" || $("#sendMessage").val()  == "")
+		showalert('emptyMessageAlert');
+		else
+		{
+			var querystring = $("#sendMessageForm").serialize();
+		    var page = "{{ path('profiles_messages_send_message_saved') }}";
+			$.post(page, querystring).done(function(data) 
+			{
+				showalert('saved-alert');
+				privateMessagesSentTable.fnDraw(true);
+			});
+
+		}
+	});
+});
+</script>

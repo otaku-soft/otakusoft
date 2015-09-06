@@ -1,0 +1,7 @@
+{% for message in items %}
+{% if loop.index > 1 %},{% endif %}
+{% set user = message %}
+{% set dateField = message.dateCreated %}
+[{{ message.id }},^^V*{{ message.title | raw}}^^V*,^^V*{{ message.message | raw}}^^V*,^^V*{% include "inlineavatar.html.twig" %}^^V*,^^V*{%include "displaydate.html.twig" %}^^V*]
+{% endfor %}
+

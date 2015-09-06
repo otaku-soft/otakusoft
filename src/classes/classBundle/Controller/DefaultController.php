@@ -11,6 +11,7 @@ class DefaultController extends Controller
 {
     public $searchQuery;
     public $searchQueryCount;
+
     public function updateAction()//generic update method
     {
         try
@@ -202,14 +203,15 @@ class DefaultController extends Controller
 
             $orderby = $this->order($request,$types);
         }
-        $this->customquery($customquery,$joinstring,$searchstring);
+        $afterSelect = "";
+        $this->customquery($customquery,$joinstring,$searchstring,$afterSelect);
         $distinctField = 'a.id';
         $queryFilteredCountString= 'SELECT COUNT(DISTINCT('.$distinctField.'))
         FROM  '.$table.' a   '.$joinstring.' '.$searchstring.' '.$orderby;
-        $queryString = 'SELECT *
+        $queryString = 'SELECT * '.$afterSelect.'
         FROM '.$table.' a  '.$joinstring.'  '.$searchstring.' '.$orderby.' LIMIT '.$start.','.$maxresults;
-
-
+        
+        
         $recordsTotalData = $connection->executeQuery($queryCountString)->fetchAll();
         $recordsTotal = $recordsTotalData[0]['COUNT(*)'];
         $recordsFilteredData = $connection->executeQuery($queryFilteredCountString)->fetchAll();
@@ -226,10 +228,13 @@ class DefaultController extends Controller
         $generalMethods->datatablesFilterJson($jsoncontent);
         $jsonfooter = ']
         }';
-        return $jsonheader.$jsoncontent.$jsonfooter;    
+        
+        return $jsonheader.$jsoncontent.$jsonfooter; 
+        
+        return new Response("")  ;
      }
 
-    public function customquery($customquery,&$joinstring,&$searchstring)
+    public function customquery($customquery,&$joinstring,&$searchstring,&$afterSelect)
     {
        if ($customquery == "friendlist")
         {
@@ -239,6 +244,17 @@ class DefaultController extends Controller
         {
             $joinstring = " LEFT JOIN otakus  on otakus.id = a.friendotakuid ";
         }
+        if ($customquery == "sentmessages")
+        {
+            $joinstring = "LEFT JOIN otakus on otakus.id = a.tootakuid";
+        }
+
+        if ($customquery == "inboxmessages")
+        {
+            $joinstring = "RIGHT JOIN otakus on otakus.id = a.sendotakuid";
+            $afterSelect = ",a.id as messageid";
+        }
+
     }
 
     public function searchDatatablesAction()
