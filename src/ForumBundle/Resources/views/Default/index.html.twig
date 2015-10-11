@@ -12,34 +12,33 @@
 		<span >No forums have been created for this category yet.</span>
 		{% else %}
 
-		<table class="table nospace" >
+		<table class="table nospace" style = "table-layout:fixed;" >
 		  <thead>
 		  	<tr>
-		  		<th>Name</th>
-		  		<th>Description</th>
-		  		<th>Threads</th>
-		  		<th>Posts</th>
-		  		<th>Last Post</th>
-		  		<th>Last Post Time</th>
-		  		<th>Last Poster</th>
+		  		<th colspan = "3">Name</th>
+		  		<th colspan = "3" >Description</th>
+		  		<th colspan = "2">Topics/Posts</th>
+		  		
+		  		<th colspan = "2">Last Post</th>
+		  		<th colspan = "2">Time</th>
+		  		<th>Poster</th>
 		  	</tr>
 		  </thead>
 		  <tbody>
 		  {% for forum in category.forums %}
 		  	<tr>
-		  		<td><a href = "{{ path('forum_inforum', {'forumid': forum.id,'title':forum.title}) }}">{{ forum.title }}</a></td>
-		  		<td>{{ forum.description}}</td>
+		  		<td colspan = "3"><a href = "{{ path('forum_inforum', {'forumid': forum.id,'title':forum.title}) }}">{{ forum.title }}</a></td>
+		  		<td colspan = "3">{{ forum.description}}</td>
 
 		  		{% if forum.lastTopic is not defined  %}
-		  		<td colspan = "5">
+		  		<td colspan = "7">
 		  		
 		  		</td>
 		  		{% else %}
 		  		{% set dateField = forum.lastActivity %}
-		  		<td>{{ forum.topicCount }}</td>
-		  		<td>{{ forum.postCount }}</td>
-		  		<td><a href = "{{ path('forum_intopic', {'topicid': forum.lastTopic.id,'title':forum.lastTopic.title}) }}?newpost=true">{{ forum.lastTopic.title }}</a></td>
-		  		<td> {{ include ("displaydate.html.twig") }}</td>
+		  		<td colspan = "2">{{ forum.topicCount }}/{{ forum.postCount }}</td>
+		  		<td colspan = "2"><a href = "{{ path('forum_intopic', {'topicid': forum.lastTopic.id,'title':forum.lastTopic.title}) }}?newpost=true">{{ forum.lastTopic.title }}</a></td>
+		  		<td colspan = "2"> {{ include ("displaydate.html.twig") }}</td>
 		  		<td>
 		  			{% set user = forum.lastPoster %}
 					{% include "inlineavatar.html.twig" %}

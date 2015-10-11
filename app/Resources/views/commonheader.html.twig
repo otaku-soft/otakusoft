@@ -9,7 +9,8 @@
     <link rel="icon" href="favicon.ico">
 
     <title>{{ pagetitle }}</title>
-    <script src="{{ asset('js/jquery.js') }}"></script>
+    <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+   <script src="{{ asset('js/jquery.js') }}"></script>
     <script src="{{ asset('js/jquery.validate.js') }}"></script>
     <script src="{{ asset('js/jquery.validate.password.js') }}"></script>
     <script src="{{ asset('js/bootstrap.js') }}"></script>
@@ -32,10 +33,37 @@
     <![endif]-->
     <link href="{{ asset('css/jquery.dataTables.css') }}" rel="stylesheet">
     <script src ="{{ asset('//cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js') }}"></script>
+    <script src="http://localhost:8082/socket.io/socket.io.js"></script>
     {% include "tinymce.html.twig" %}
+    {% set userid = render(controller('IndexIndexBundle:Header:userid')) %}
     <script>
     var errorMessage = "";
     var appendText = "";
+    var socket =  io.connect("http://127.0.0.1:8082");
+    socket.on('message', function(msg)
+    {
+      if(msg == "message{{userid}}")
+      {
+        var page = "{{ path('_index_private_messages_count') }}";
+        var querystring = "";
+        $.post(page, querystring).done(function(data) 
+        {
+          if ("{{ pagetitle }}" == "Messages")
+          {
+            privateMessagesInboxTable.fnDraw(false);
+            showAlert('Message','You have just received a new message :3');
+          }
+          else  
+          $("#messagescount").html(data);  
+          var page = "{{ path('profiles_messages') }}";
+          $.post(page, querystring).done(function(data) 
+          {
+
+          });
+        });
+      }
+    });
+
     function showAlert(title,message,titleClass,messageClass)
     {
         if(typeof titleClass !== "undefined")
@@ -52,7 +80,11 @@
         var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
         return re.test(email);
     }
+    function sendmessage()
+    {
 
+      socket.send("customAlert");
+    }
   function readURL(input) 
   {
     if (input.files && input.files[0]) 
@@ -187,6 +219,13 @@
       event.preventDefault();
       search('{{searchurl}}','{{ searchtype }}');
     });
+    // Start the socket
+   
+    //socket.connect();
+     
+
+
+
   });
   {% endif %}
   var countz = 0;

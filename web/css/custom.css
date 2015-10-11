@@ -2,11 +2,13 @@
 -------------------------------------------------- */
 html {
   position: relative;
-  min-height: 100%;
+  min-height: 100%; 
 }
 body {
   /* Margin bottom by footer height */
+  min-height:100%;
   margin-bottom: 60px;
+
 }
 .footer {
   position: absolute;
@@ -23,7 +25,6 @@ body {
 /* Not required for template or sticky footer method. */
 
 body > .container {
-  padding: 60px 15px 0;
 }
 .container .text-muted {
   margin: 20px 0;
@@ -48,24 +49,23 @@ code {
   text-align: center;
   background-color:#F8F8F8 ;
 }
-
 .panel-category {
-  border-color: #627296;
+  border-color: #963003;
 }
 .panel-category > .panel-heading {
   color: #fff;
-  background-color: #627296;
-  border-color: #627296;
+  background-color: #963003;
+  border-color: #963003;
 }
 .panel-category > .panel-heading + .panel-collapse > .panel-body {
-  border-top-color: #627296;
+  border-top-color: #963003;
 }
 .panel-category > .panel-heading .badge {
-  color: #627296;
+  color: #963003;
   background-color: #fff;
 }
 .panel-category > .panel-footer + .panel-collapse > .panel-body {
-  border-bottom-color: #627296;
+  border-bottom-color: #963003;
 }
 .nospace
 {
@@ -95,3 +95,6 @@ body{
  } 
 
 
+table{
+  background-color:white;
+}

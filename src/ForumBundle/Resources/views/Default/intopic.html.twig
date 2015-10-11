@@ -30,6 +30,9 @@
 				     	{{ title }}
 				     	<hr/>
 				     	{% endif %}
+				 		{% set dateField = post.dateCreated %}
+				     	<label>{% include "displaydate.html.twig" %}</label>
+				     	<br/>
 				     	{{ post.message | raw }}
 				     </td>
 				</tr>

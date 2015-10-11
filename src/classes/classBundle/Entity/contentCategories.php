@@ -4,12 +4,12 @@ namespace classes\classBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * categories
+ * contentCategories
  *
  * @ORM\Table()
  * @ORM\Entity
  */
-class categories
+class contentCategories
 {
     /**
      * @var integer
@@ -25,7 +25,6 @@ class categories
      * @ORM\Column(name="title", type="string",length = 255)
      */
     public $title;    
-
 
     public function __construct()
     {

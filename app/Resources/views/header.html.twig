@@ -1,12 +1,24 @@
 {% include "commonheader.html.twig" %}
 
 
-<body style = "background-image:url({{ asset('images/registerbackground14.jpg') }});background-repeat:no-repeat;background-position:center top;">
+<body   style = "padding:0px;margin:0px;background-color:black !important;background-image:url(/images/bg5.png);background-repeat:repeat-x"
+>
 
-{% include "navigation.html.twig" %}
+{{ render(controller('IndexIndexBundle:Header:index')) }}
+	
     <!-- Begin page content -->
-    <div class="container" style = "width:100%">
-      
-        <div class="panel panel-primary" style = "margin-top:350px;background-color:#F2F2F2;border:none ">
-        	<div class="panel-heading"><h3>{{ pagetitle }}</h3></div>
+    <div class="container" style = "background-color:white;padding:0px;padding-top:30px;overflow-x:hidden;min-height:1080px;width:85%" >
+      <div class = "pager" style = "background-color:#D8D8D8"><img src = "/images/bannerhd.jpg" style = "width:100%" /></div>
+     
+        <div >
+        	<div class="well well-sm" style = "background-color:#D8D8D8">
+
+    	          {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+		          <h4  style = "color:black;float:right" >Welcome {{ app.user.username }}</h4>
+		          {% else %}
+		          <h4 style = "color:black;float:right"  >Welcome Guest</h4>
+		          {% endif %}
+		          <h4>{{ pagetitle }}</h4>
+        	</div>
 				<div class="panel-body">
+

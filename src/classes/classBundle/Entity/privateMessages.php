@@ -51,6 +51,13 @@ class privateMessages
      * @ORM\Column(name="dateCreated", type = "datetime")
      */
     public $dateCreated;
+     /**
+     * @var integer
+     *
+     * @ORM\Column(name="seen", type = "smallint")
+     */
+    public $seen;
+
     public function __construct()
     {
         $class_vars = get_class_vars(get_class($this));
