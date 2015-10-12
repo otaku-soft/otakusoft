@@ -62,6 +62,10 @@
           });
         });
       }
+      if (msg == "notifications{{userid}}")
+      {
+        updateNotificationCount();
+      }
     });
 
     function showAlert(title,message,titleClass,messageClass)
@@ -241,6 +245,16 @@
         e.stopImmediatePropagation();
     }
 });
+
+    function updateNotificationCount()
+    {
+      var querystring = "";
+      var page = "{{ path('notifications_messages_count') }}";
+      $.post(page, querystring).done(function(data) 
+      {
+        $("#notificationscount").html(data);
+      });
+    }
     </script>
   
 

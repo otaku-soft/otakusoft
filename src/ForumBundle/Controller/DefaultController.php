@@ -9,6 +9,7 @@ use classes\classBundle\Classes\otakusClass;
 use classes\classBundle\Classes\functionsClass;
 use classes\classBundle\Entity\topics;
 use classes\classBundle\Entity\posts;
+use classes\classBundle\Entity\notifications;
 class DefaultController extends Controller
 {
     public function indexAction()
@@ -205,7 +206,7 @@ class DefaultController extends Controller
         $params['postid'] = $request->query->get("postid","");
         return $this->render('ForumBundle:Default:intopic.html.twig', $params);
     }
-    public function intopicNewPostAction()
+    public function intopicNewPostAction(Request $request)
     {
         $otakusClass = new otakusClass($this);
         if ($otakusClass->isRole("USER"))
@@ -220,8 +221,17 @@ class DefaultController extends Controller
             $em->persist($posts);
             $repository = $em->getRepository('classesclassBundle:topics'); 
             $topic = $repository->findOneBy(array("id" => $posts->topicid)); 
-            $topic->lastModified =  new \DateTime("now");         
-            $em->flush();  
+            $topic->lastModified =  new \DateTime("now");
+            $em->flush();
+            if ($topic->otakuid != $otakusClass->getId())
+            {
+                $notifictions = new notifications();
+                $notifictions->type = "forum_post";
+                $notifictions->postid =  $posts->id;
+                $notifictions->otakuid = $topic->otakuid;
+                $em->persist($notifictions);
+                $em->flush();
+            }
             return new Response($this->generateUrl('forum_intopic',array("topicid" => $topic->id,"title" => $topic->title,"pagenumber"=> 1))."&newpost=true");          
         }
         return new Response("");        

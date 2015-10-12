@@ -1,0 +1,26 @@
+{% set ajaxContainer = 'notificationsdiv' %}
+<div id = "notificationsdiv">
+{% if notifications | length == 0 %}
+You have no notifications
+{% else %}
+{% for notification in notifications %}
+{% if loop.index > 1 %}
+<br/>
+{% endif %}
+{% if notification.orgseen == 0 %}
+<div class="alert alert-success" role="alert">{{ notification.html | raw }}</div>
+{% else %}
+{{ notification.html | raw }}
+{% endif %}
+{% endfor %}
+{% endif %}
+<br/>
+{% include "pagination.html.twig" %}
+</div>
+
+<script>
+$( document ).ready(function() 
+{
+	updateNotificationCount();
+});
+</script>

@@ -24,6 +24,7 @@ class AppKernel extends Kernel
 ,
             new ForumBundle\ForumBundle(),
             new profilesBundle\profilesBundle(),
+            new notificationsBundle\notificationsBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

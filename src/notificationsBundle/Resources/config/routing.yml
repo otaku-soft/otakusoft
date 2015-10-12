@@ -1,0 +1,6 @@
+notifications_messages:
+    path:     /
+    defaults: { _controller: notificationsBundle:Default:index }
+notifications_messages_count:
+    path:     /count
+    defaults: { _controller: notificationsBundle:Default:notificationsCount }

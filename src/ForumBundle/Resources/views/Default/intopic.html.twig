@@ -73,7 +73,6 @@ $('html, body').animate({scrollTop: $("#post{{postid}}").offset().top - 100}, 20
 <script>
 $( document ).ready(function() 
 {
-
 	$("#addPost").submit(function(event)
 	{
 		event.preventDefault();
@@ -93,10 +92,16 @@ $( document ).ready(function()
 	        $.post(page, querystring) 
 	        .done(function(data) 
 	        {
-	        	window.location = data;
+	        	socket.send("notifications{{ topic.otakuid }}");
+			    socket.on('message', function(msg)
+			    {
+			    	if (msg == "notifications{{ topic.otakuid }}")
+			    	window.location = data;
+			    });
 	        });
 		}
 	});
+
 });
 </script>
 {% endif %}

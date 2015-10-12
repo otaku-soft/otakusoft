@@ -1,3 +1,7 @@
+notifications:
+    resource: "@notificationsBundle/Resources/config/routing.yml"
+    prefix:   /notifications
+
 profiles:
     resource: "@profilesBundle/Resources/config/routing.yml"
     prefix:   /profile

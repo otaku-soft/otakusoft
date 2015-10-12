@@ -40,6 +40,7 @@
             {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
             <li><a href = "{{ path('profiles_editprofile') }}">Profile</a></li>
             <li><a href = "{{ path('profiles_messages') }}">Messages <span class="badge" id = "messagescount">{{ render(controller('IndexIndexBundle:Header:privateMessagesCount')) }}</span></a></li>
+            <li><a href = "javascript:ajaxModal('{{ path('notifications_messages') }}','Notifications')">Notifications <span class="badge" id = "notificationscount">{{ render(controller('notificationsBundle:Default:notificationsCount')) }}</span></a></li>
             <li><a href = "{{ path('fos_user_security_logout') }}">Logout</a></li>
             {% else %}
             
