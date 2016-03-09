@@ -36,12 +36,31 @@ class DefaultController extends Controller
                 $count2 =  $connection->executeQuery($sql)->fetchAll();
                 $count2 = $count2[0]['count'];
                 $topic->pagenumber = $functionsClass->navigationTotalPages($count2);
-
-
-        		$notification->html = '<span style = "color:black"><b><a href = "'.$this->generateUrl('profiles_viewprofile',array("id" =>$post->otakuid )).'">'.$otaku->getUsername().'</a></b> has replied to your topic: <b><a href = "'.$this->generateUrl('forum_intopic',array("topicid" =>$topic->id,"title" => $topic->title,"pagenumber" => $topic->pagenumber,"postid" => $post->id )).'">'.$topic->title.'</a></b></span>';
-        		$notification->orgseen = $notification->seen;
-        		$notification->seen = 1;
+        		$notification->html = '<span style = "color:black"><b><a href = "'.$this->generateUrl('profiles_viewprofile',array("id" =>$post->otakuid )).'">'.$otaku->getUsername().'</a></b> has replied to  topic: <b><a href = "'.$this->generateUrl('forum_intopic',array("topicid" =>$topic->id,"title" => $topic->title,"pagenumber" => $topic->pagenumber,"postid" => $post->id )).'">'.$topic->title.'</a></b></span>';
         	}
+        	if ($notification->type == "forum_visitor_message")
+        	{
+        		$repository = $em->getRepository('classesclassBundle:visitorMessages');
+        		$visitorMessage = $repository->findOneBy(array("id" => $notification->visitormessageid));
+        		$repository = $em->getRepository('classesclassBundle:otakus');
+        		$otaku = $repository->findOneBy(array("id" => $visitorMessage->friendotakuid));
+        		$notification->html = '<span style = "color:black"><b><a href = "'.$this->generateUrl('profiles_viewprofile',array("id" =>$visitorMessage->friendotakuid)).'">'.$otaku->getUsername().'</b></a> has  sent you a <b><a href = "'.$this->generateUrl('profiles_viewprofile',array("id" => $otakusClass->getId(),"section" => "viewprofileVistorMessages")).'">visitor message</a></b> </span>';
+        	}
+        	if ($notification->type == "forum_friend_request")
+        	{
+        		$repository = $em->getRepository('classesclassBundle:otakus');
+        		$otaku = $repository->findOneBy(array("id" => $notification->friendRequestSendOtakuid));
+        		$notification->html = '<span style = "color:black"><b><a href = "'.$this->generateUrl('profiles_viewprofile',array("id" =>$otaku->getId() )).'">'.$otaku->getUsername().'</a></b> sent a <a href = "'.$this->generateUrl('profiles_editprofile',array('section' => 'editprofileFriendRequests')).'">friend request</a>';
+        	}
+        	if ($notification->type == "forum_friend_added")
+        	{
+        		$repository = $em->getRepository('classesclassBundle:otakus');
+        		$otaku = $repository->findOneBy(array("id" => $notification->friendRequestAcceptedOtakuid));
+        		$notification->html = 'You are now friends with <span style = "color:black"><b><a href = "'.$this->generateUrl('profiles_viewprofile',array("id" =>$otaku->getId() )).'">'.$otaku->getUsername().'</a>';
+        	}
+
+        	$notification->orgseen = $notification->seen;
+    		$notification->seen = 1;
         }
         $em->flush();
         return $this->render('notificationsBundle:Default:index.html.twig',array("notifications" => $notifications,"pagenumber" => $pagenumber,"totalPages" => $totalPages,"pagination" => array(),"paginationPath" => "notifications_messages"));

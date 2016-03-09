@@ -5,7 +5,7 @@
 {% if totalPages > 1 %}
   <ul class="pagination">
 
-  	<li><a href="javascript:gotopage('{{ path(paginationPath, pagination) }}','{{ ajaxContainer }}' )">First</a></li>
+  	<li><a href="javascript:gotopage('{{ path(paginationPath, pagination) | url_encode }}','{{ ajaxContainer }}' )">First</a></li>
   	{% for i in (pagenumber-4)..(pagenumber+4) %}
   	{% if i > 0 and i <= totalPages %}
     {% if i == 1 %}
@@ -14,11 +14,11 @@
     {% set pagination = pagination|merge({'pagenumber': i}) %}
     {% endif %}
 
-    <li {% if i == pagenumber %}class = "active"{% endif %}><a href="javascript:gotopage('{{ path(paginationPath, pagination) }}','{{ ajaxContainer }}')">{{ i }}</a></li>
+    <li {% if i == pagenumber %}class = "active"{% endif %}><a href="javascript:gotopage('{{ path(paginationPath, pagination) | url_encode }}','{{ ajaxContainer }}')">{{ i }}</a></li>
     {% endif %}
 	{% endfor %}
 	{% set pagination = pagination|merge({'pagenumber': totalPages}) %}
-    <li><a href="javascript:gotopage('{{ path(paginationPath, pagination) }}','{{ ajaxContainer }}')">Last</a></li>
+    <li><a href="javascript:gotopage('{{ path(paginationPath, pagination)  | url_encode }}','{{ ajaxContainer }}')">Last</a></li>
   </ul>
 </nav>
 {% endif %}

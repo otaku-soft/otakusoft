@@ -4,12 +4,12 @@ namespace classes\classBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * categories
+ * subscriptions
  *
  * @ORM\Table()
  * @ORM\Entity
  */
-class categories
+class subscriptions
 {
     /**
      * @var integer
@@ -19,19 +19,24 @@ class categories
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     public $id;
-     /**
-     * @var integer
+    /**
+     * @var string
      *
-     * @ORM\Column(name="title", type="string",length = 255)
+     * @ORM\Column(name="otakuid", type="integer")
      */
-    public $title;    
-     /**
-     * @var integer
+    public $otakuid;
+        /**
+     * @var string
      *
-     * @ORM\Column(name="orderid", type="integer")
+     * @ORM\Column(name="topicid", type="integer")
      */
-    public $orderid; 
-
+    public $topicid;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length = 45)
+     */
+    public $type;
     public function __construct()
     {
         $class_vars = get_class_vars(get_class($this));

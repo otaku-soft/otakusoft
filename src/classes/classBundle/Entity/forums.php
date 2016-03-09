@@ -37,6 +37,13 @@ class forums
      * @ORM\Column(name="description", type = "text")
      */
     public $description; 
+     /**
+     * @var integer
+     *
+     * @ORM\Column(name="orderid", type="integer")
+     */
+    public $orderid; 
+    
 
     public function __construct()
     {

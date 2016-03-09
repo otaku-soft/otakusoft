@@ -42,7 +42,7 @@ $( document ).ready(function()
 			$.post(page, querystring).done(function(data) 
 			{
 				showalert('saved-alert');
-				socket.send('message{{id}}');
+				sendNotification('message{{id}}');
 				privateMessagesSentTable.fnDraw(true);
 			});
 

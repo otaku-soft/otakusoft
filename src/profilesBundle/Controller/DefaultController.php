@@ -9,6 +9,8 @@ use classes\classBundle\Classes\otakusClass;
 use classes\classBundle\Classes\functionsClass;
 use classes\classBundle\Entity\friends;
 use classes\classBundle\Entity\visitorMessages;
+use classes\classBundle\Entity\notifications;
+
 class DefaultController extends Controller
 {
 	public $fields;
@@ -16,6 +18,8 @@ class DefaultController extends Controller
     {
     	$em = $this->getDoctrine()->getManager();
         $otakusClass = new otakusClass($this);
+        $request = Request::createFromGlobals();
+        $request->getPathInfo();
     	$repository = $em->getRepository('classesclassBundle:otakus');
     	$otaku = $repository->findOneBy(array("id" => $id));
         $friendotakuid = $otakusClass->getId();
@@ -30,8 +34,14 @@ class DefaultController extends Controller
     	$functionsClass->addfield($tabs,"viewprofileTopics","Topics Started");
     	$functionsClass->addfield($tabs,"viewprofilePosts","Posts");
         $functionsClass->addfield($tabs,"viewprofileFriends","Friends");   
-        $functionsClass->addfield($tabs,"viewprofileVistorMessages","Visitor Messages");   
-        return $this->render('profilesBundle:Default:viewprofile.html.twig',array("user" => $otaku,"fields" => $this->fields,"tabs" => $tabs,"friend" => $friend));
+        $functionsClass->addfield($tabs,"viewprofileVistorMessages","Visitor Messages"); 
+        $section =   $request->query->get("section");
+        if ($otakusClass->getId() == $id)
+        $self = true;
+        else
+        $self = false;
+
+        return $this->render('profilesBundle:Default:viewprofile.html.twig',array("user" => $otaku,"fields" => $this->fields,"tabs" => $tabs,"friend" => $friend,"section" => $section,"self" => $self));
     }
     public function addFriendButtonAction()
     {
@@ -96,6 +106,8 @@ class DefaultController extends Controller
     {
         $otakusClass = new otakusClass($this);
         $functionsClass = new functionsClass($this);
+        $request = Request::createFromGlobals();
+        $request->getPathInfo();
         if ($otakusClass->isRole("USER"))
         {
             $em = $this->getDoctrine()->getManager();
@@ -106,7 +118,8 @@ class DefaultController extends Controller
             $functionsClass->addfield($tabs,"editprofilePersonal","Personal");
             $functionsClass->addfield($tabs,"editprofileFriends","Friends");
             $functionsClass->addfield($tabs,"editprofileFriendRequests","Friend Requests");
-            return $this->render('profilesBundle:Default:editprofile.html.twig',array("user" => $otaku,"fields" => $this->fields,"tabs" => $tabs));
+            $section =   $request->query->get("section");
+            return $this->render('profilesBundle:Default:editprofile.html.twig',array("user" => $otaku,"fields" => $this->fields,"tabs" => $tabs,"section" => $section));
         }
         return new Response("not auth");
     }
@@ -131,6 +144,12 @@ class DefaultController extends Controller
                 $em->persist($friends);
                 $checkFriendRequest2->status = 1;
                 $em->flush();
+                $notificaitons = new notifications();
+                $notificaitons->friendRequestAcceptedOtakuid = $otakusClass->getId();
+                $notificaitons->type = "forum_friend_added";
+                $notificaitons->otakuid = $request->request->get("id");  
+                $em->persist($notificaitons);
+                $em->flush();
                 return new Response('Saved');
             }
             if ($checkFriendRequest == null)
@@ -140,6 +159,12 @@ class DefaultController extends Controller
                 $friends->friendotakuid = $request->request->get("id");
                 $friends->status = 0;
                 $em->persist($friends);
+                $em->flush();
+                $notificaitons = new notifications();
+                $notificaitons->friendRequestSendOtakuid = $otakusClass->getId();
+                $notificaitons->type = "forum_friend_request";
+                $notificaitons->otakuid = $request->request->get("id");      
+                $em->persist($notificaitons);
                 $em->flush();
                 return new Response('Saved');
             }
@@ -175,6 +200,7 @@ class DefaultController extends Controller
     public function editProfileSaveAction()
     {
         $otakusClass = new otakusClass($this);
+        $functionsClass = new functionsClass($this);
         if ($otakusClass->isRole("USER"))
         {
             $em = $this->getDoctrine()->getManager();
@@ -197,8 +223,43 @@ class DefaultController extends Controller
             
             foreach ($files as $key =>$uploadedFile) 
             {
+                if (strlen($uploadedFile['name']) > 100 )
+                return new Response("File Name too long");
                 if ($uploadedFile['name'] != "")
                 {
+                    $imageProperties = @getimagesize($uploadedFile["tmp_name"]);
+
+                    if (!$imageProperties)
+                    return new Response("Bad image uploaded");
+
+
+                    $width  = $imageProperties[0];
+                    $height = $imageProperties[1];
+                    $orgWidth = $width;
+                    $orgHeight = $height;
+                    if ($width > 200 || $height > 200)
+                    {
+                        if ($width > 200)
+                        {
+                            $width = 200;
+                            $ratio = $width/$orgWidth;
+                            $height = $orgHeight * $ratio;
+                        }
+                        if ($height > 200)
+                        {
+                            $height = 200;
+                            $ratio = $height/$orgHeight;
+                            $width = $orgWidth * $ratio;
+                        }                
+                        
+                        $file = $uploadedFile["tmp_name"];
+                        $image = new \Imagick($file);
+                        $image->thumbnailImage($width, $height);
+                        $image->writeImage($file);
+                    }
+
+                    
+                    
                     $uploadedFile['name'] = filter_var($uploadedFile['name'],FILTER_SANITIZE_EMAIL);
                     while(file_exists($path.$uploadedFile['name']))
                     $uploadedFile['name'] = rand(0,9).$uploadedFile['name'];
@@ -206,6 +267,7 @@ class DefaultController extends Controller
                     if (move_uploaded_file($uploadedFile["tmp_name"],
                     $path.$uploadedFile["name"]))
                     $otaku->avatar = $uploadedFile['name'];
+                
                 }
                 
             }
@@ -322,6 +384,12 @@ class DefaultController extends Controller
         $visitorMessages->message = $message;
         $em->persist($visitorMessages);
         $em->flush();
+        $notificaitons = new notifications();
+        $notificaitons->otakuid = $otakuid;
+        $notificaitons->visitormessageid = $visitorMessages->id;
+        $notificaitons->type = "forum_visitor_message";
+        $em->persist($notificaitons);
+        $em->flush();       
         return new Response("");
     }
     function getFriendsAction()

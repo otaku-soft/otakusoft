@@ -39,37 +39,66 @@
     <script>
     var errorMessage = "";
     var appendText = "";
-    var socket =  io.connect("http://127.0.0.1:8082");
+    var inmessage = 0;
+    {% if userid != -1 %}
+    socket =  io.connect("http://127.0.0.1:8082");
+    
+    socket.on('connect', function () 
+    {
+      socket.emit('setUserId',[{{userid}},socket.id]);
+    });
+    if ("{{ pagetitle }}" == "Messages")
+    sendNotificationSelfMessage();  
     socket.on('message', function(msg)
     {
+      
       if(msg == "message{{userid}}")
       {
         var page = "{{ path('_index_private_messages_count') }}";
         var querystring = "";
         $.post(page, querystring).done(function(data) 
         {
+          if (parseInt(data) >  $("#messagescount").html())
+          playNotificationSound();
           if ("{{ pagetitle }}" == "Messages")
           {
-            privateMessagesInboxTable.fnDraw(false);
-            showAlert('Message','You have just received a new message :3');
+            if (inmessage == 0)
+            {
+              privateMessagesInboxTable.fnDraw(false);
+              if (parseInt(data) >  $("#messagescount").html())
+              showAlert('Message','You have just received a new message :3');
+            
+              var page = "{{ path('profiles_messages_reset_seen') }}";
+              var querystring = "";
+              $.post(page, querystring).done(function(data) 
+              {
+                sendNotificationSelfMessage();
+                inmessage = 1;
+              });
+            }
+            else
+            inmessage = 0;
           }
           else  
           $("#messagescount").html(data);  
-          var page = "{{ path('profiles_messages') }}";
-          $.post(page, querystring).done(function(data) 
-          {
 
-          });
         });
       }
       if (msg == "notifications{{userid}}")
       {
-        updateNotificationCount();
+        updateNotificationCount(true);
       }
     });
-
+    {% endif %}
+    $(window).on('beforeunload', function ()
+    {
+        socket.emit('removeUserId',[{{userid}},socket.id]);
+       
+    });    
     function showAlert(title,message,titleClass,messageClass)
     {
+        $("#alertModalLabel").html("");
+        $("#alertModalMessage").html("");
         if(typeof titleClass !== "undefined")
         title = '<div class ="' + titleClass + '">' + title + '</div>';
 
@@ -246,15 +275,54 @@
     }
 });
 
-    function updateNotificationCount()
+    function updateNotificationCount(playaudio)
     {
+      if(typeof(playaudio)==='undefined')
+      playaudio = false;
+
       var querystring = "";
       var page = "{{ path('notifications_messages_count') }}";
       $.post(page, querystring).done(function(data) 
       {
+        if (playaudio && parseInt(data) > parseInt($("#notificationscount").html()))
+        {
+          playNotificationSound();
+        }
         $("#notificationscount").html(data);
       });
     }
+    function playNotificationSound()
+    {
+
+      var audio = document.createElement('audio');
+      audio.setAttribute('src', '{{asset('notification.mp3') }}');
+      audio.play();
+    }
+
+    function sendNotification(msg)
+    {
+      socket.send(msg);
+    }
+    function sendNotificationSelf()
+    {
+      sendNotification("notifications{{userid}}");
+    }
+    function sendNotificationSelfMessage()
+    {
+      sendNotification("message{{userid}}");
+    }
+    function subscribe(querystring)
+    {
+      var page = "{{ path('_index_subscribe') }}";
+      $.post(page, querystring).done(function(data) 
+      {
+        showAlert("Subscription Updated");
+      });
+
+    }
+
+
+
     </script>
   
 

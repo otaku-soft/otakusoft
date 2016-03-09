@@ -7,10 +7,21 @@
 	<a href = "{{ path('profiles_viewprofile',{"id":user.id}) }}">
 	{{  user.username}}  
 
-	<img src = "{{ asset(avatar) }}" alt = "" style = "max-height:20px" /></a><br/>
+	<img src = "{{ asset(avatar) }}" alt = "" style = "max-height:20px" class ="avatarimage" /></a><br/>
 {% endif %}
 {% if avatartype == "profile" %}
-	<img src = "{{ asset(avatar) }}" alt = "" style = "max-height:100px" />
-	<br/>
+	<a href = "{{ path('profiles_viewprofile',{"id":user.id}) }}">
+		<label>{{ user.username }}</label><br/>
+		<img src = "{{ asset(avatar) }}" alt = ""  class ="avatarimage" />
+		<br/>
+	</a>
 {% endif %}
 
+<script>
+$( document ).ready(function() {
+  $(".avatarimage").error(function () 
+  { 
+    $(this).hide();
+  });
+});
+</script>

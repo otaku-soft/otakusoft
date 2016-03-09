@@ -16,12 +16,12 @@ class DefaultController extends Controller
     {
     	$em = $this->getDoctrine()->getManager();
     	$repository = $em->getRepository('classesclassBundle:categories');
-        $categories = $repository->findAll();
+        $categories = $repository->findBy(array(),array("orderid" => "ASC"));
 
         foreach ($categories as $category)
         {
         	$repository = $em->getRepository('classesclassBundle:forums');
-        	$category->forums = $repository->findBy(array("categoryid" => $category->id));
+        	$category->forums = $repository->findBy(array("categoryid" => $category->id),array("orderid" => "ASC"));
         	if (!count($category->forums))
         	unset($category->forums);
         	else
@@ -223,16 +223,33 @@ class DefaultController extends Controller
             $topic = $repository->findOneBy(array("id" => $posts->topicid)); 
             $topic->lastModified =  new \DateTime("now");
             $em->flush();
-            if ($topic->otakuid != $otakusClass->getId())
+
+            $repository = $em->getRepository('classesclassBundle:subscriptions');
+            $subscriptions =  $repository->findBy(array("type" => "topic","topicid" => $posts->topicid));
+
+            //if ($topic->otakuid != $otakusClass->getId())
+            $sendString = "";
+            foreach ($subscriptions as $subscription)
             {
-                $notifictions = new notifications();
-                $notifictions->type = "forum_post";
-                $notifictions->postid =  $posts->id;
-                $notifictions->otakuid = $topic->otakuid;
-                $em->persist($notifictions);
-                $em->flush();
+                if ($subscription->otakuid != $otakusClass->getId())
+                {
+                    $i = 0;
+                    $notifictions = new notifications();
+                    $notifictions->type = "forum_post";
+                    $notifictions->postid =  $posts->id;
+                    $notifictions->otakuid = $subscription->otakuid;
+                    $em->persist($notifictions);
+                    if ($i  % 100 == 0)
+                    $em->flush();
+                    $i++;
+                    if ($sendString != "")
+                    $sendString = $sendString.",";    
+                    $sendString = $sendString.$subscription->otakuid;
+                }
             }
-            return new Response($this->generateUrl('forum_intopic',array("topicid" => $topic->id,"title" => $topic->title,"pagenumber"=> 1))."&newpost=true");          
+            $em->flush();
+            $response = array("url" => $this->generateUrl('forum_intopic',array("topicid" => $topic->id,"title" => $topic->title,"pagenumber"=> 1))."&newpost=true","ids" => $sendString);
+            return new Response(json_encode($response));          
         }
         return new Response("");        
     }

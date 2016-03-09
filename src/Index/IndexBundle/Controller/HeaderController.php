@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use classes\classBundle\Entity\otakus;
+use classes\classBundle\Entity\subscriptions;
 use classes\classBundle\Classes\otakusClass;
 use classes\classBundle\Classes\functionsClass;
 class HeaderController extends Controller
@@ -38,6 +39,37 @@ class HeaderController extends Controller
     {
         $otakusClass = new otakusClass($this); 
         return new Response($otakusClass->getId());
+    }
+    public function returnSubscriptionAction($params)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $otakusClass = new otakusClass($this);
+        $repository = $em->getRepository('classesclassBundle:subscriptions');
+        $params = array_merge(array("otakuid" => $otakusClass->getId()),$params);
+        $subscription =  $repository->findBy($params);
+        if ($subscription != null)
+        return new Response("selected");
+        return new Response("");
+    }
+    function subscribeAction(Request $request)
+    {
+        $otakusClass = new otakusClass($this);
+        $em = $this->getDoctrine()->getManager();
+        $repository = $em->getRepository('classesclassBundle:subscriptions');
+        $params = $request->request->all();
+        $params['otakuid'] = $otakusClass->getId();
+        $subscription =  $repository->findOneBy($params);
+        if ($subscription == null)
+        {
+            $subscription = new subscriptions();
+            foreach ($params as $key => $value)
+            $subscription->$key = $value;
+            $em->persist($subscription);
+        }
+        else
+        $em->remove($subscription);
+        $em->flush();
+        return new Response("");
     }
 }
 ?>

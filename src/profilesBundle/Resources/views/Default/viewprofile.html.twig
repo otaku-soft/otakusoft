@@ -4,7 +4,7 @@
 
 {% include "tabs.html.twig" %}
 <div class="tab-content list-group-item" >
-		<div role="tabpanel" class="tab-pane fade in active" id = "viewprofilePersonalInformation">
+		<div role="tabpanel" class="tab-pane fade{% if section == "" %} in active{% endif %}" id = "viewprofilePersonalInformation">
 			{% for field in fields %}
 			{% if  field.options.profiledisplay  is not defined %}
 			{% if field.options.type == "avatar" %}
@@ -46,16 +46,18 @@
 			{% include "searchdatatables.html.twig" %}
 
 		</div>
-		<div role="tabpanel" class="tab-pane fade" id = "viewprofileVistorMessages">
+		<div role="tabpanel" class="tab-pane fade{% if section == "viewprofileVistorMessages" %} in active{% endif %}" id = "viewprofileVistorMessages">
 			{% if friend %}
 			<h3>Add Message</h3>
 			<textarea id = "makeComment"></textarea>
 			<br/>
 			<button type = "button" class = "btn btn-success" onclick = "addMessage()">Submit</button>
-			{% else %}
-			You Must be a friend in order to add messages to this User
-			{% endif %}
 			<hr/>
+			{% elseif not self %}
+			You Must be a friend in order to add messages to this User
+			<hr/>
+			{% endif %}
+			
 			<h3 id = "visitorMessages">Visitor Messages</h3>
 			<div id = "viewprofileVistorMessagesAjax"></div>
 
@@ -115,7 +117,10 @@ function friendRequest(friendotakuid)
 	$.post(page, querystring).done(function(data) 
     {
     	if (data == "Saved")
-		loadFriendButton()
+    	{
+    		loadFriendButton();
+    		sendNotification("notifications" + friendotakuid);
+    	}
 		else
 		showAlert("Oh noes",data);
 	});	
@@ -127,6 +132,7 @@ function addMessage()
 	var querystring = "otakuid={{user.id }}&message=" + message;
 	$.post(page, querystring).done(function(data) 
     {
+    	sendNotification("notifications{{user.id}}")
     	tinyMCE.get('makeComment').setContent('');
     	loadMessages(1);
     });

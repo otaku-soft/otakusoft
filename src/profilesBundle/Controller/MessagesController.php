@@ -17,12 +17,7 @@ class MessagesController extends Controller
     	$otakusClass = new otakusClass($this);
         $functionsClass = new functionsClass($this);
 
-        $messages = $this->getDoctrine()->getManager()->getRepository('classesclassBundle:privateMessages')->findBy(array("tootakuid" =>$otakusClass->getId(),"seen" => 0));
-        foreach ($messages as $message)
-        {
-            $message->seen = 1;
-        }
-        $this->getDoctrine()->getManager()->flush();
+        $this->resetSeen();
 
     	if ($otakusClass->isRole("USER"))
         {
@@ -32,6 +27,21 @@ class MessagesController extends Controller
     		return $this->render('profilesBundle:Messages:index.html.twig',array("id" => $otakusClass->getId(),"tabs" => $tabs));
     	}
     	return new Response("");
+    }
+    public function resetSeen()
+    {
+        $otakusClass = new otakusClass($this);
+        $messages = $this->getDoctrine()->getManager()->getRepository('classesclassBundle:privateMessages')->findBy(array("tootakuid" =>$otakusClass->getId(),"seen" => 0));
+        foreach ($messages as $message)
+        {
+            $message->seen = 1;
+        }
+        $this->getDoctrine()->getManager()->flush();
+    }
+    public function resetSeenAction()
+    {
+        $this->resetSeen();
+        return new Response("");
     }
     public function sendMessageAction()
     {

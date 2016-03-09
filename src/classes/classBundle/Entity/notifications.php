@@ -41,6 +41,24 @@ class notifications
     /**
      * @var string
      *
+     * @ORM\Column(name="friendRequestSendOtakuid", type="integer")
+     */
+    public $friendRequestSendOtakuid;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="friendRequestAcceptedOtakuid", type="integer")
+     */
+    public $friendRequestAcceptedOtakuid;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="visitormessageid", type="integer")
+     */
+    public $visitormessageid;
+    /**
+     * @var string
+     *
      * @ORM\Column(name="seen", type="smallint")
      */
     public $seen;

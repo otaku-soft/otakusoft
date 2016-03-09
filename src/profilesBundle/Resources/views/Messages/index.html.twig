@@ -9,7 +9,7 @@
 		{% set findby = "a.tootakuid" %}
 		{% set customquery = "inboxmessages" %}
 		{% set template = "profilesBundle:Messages:Search/inbox.html.twig" %}
-		{% set header = "<th>Id</th><th>Title</th><th>Message</th><th>Sent to</th><th>Date</th><th>Reply</th>" %}
+		{% set header = "<th>Id</th><th>Title</th><th>Message</th><th>From</th><th>Date</th><th>Reply</th>" %}
 		{% set unsearchableArray = [5] %}
 		{% set types = "a.id,a.title,a.message,otakus.username,a.dateCreated" %}
 		{% set findbyvalues = id %}

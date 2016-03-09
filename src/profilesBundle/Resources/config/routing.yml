@@ -21,10 +21,6 @@ profiles_getmessages:
     path:     /getmessages/
     defaults: { _controller: profilesBundle:Default:getVisitorsMessages}
 
-profiles_getmessages:
-    path:     /getmessages/
-    defaults: { _controller: profilesBundle:Default:getVisitorsMessages}
-
 profiles_addvisitormessage:
     path:     /addVisitorMessage/
     defaults: { _controller: profilesBundle:Default:addVisitorMessage }
@@ -62,3 +58,7 @@ profiles_messages_send_message:
 profiles_messages_send_message_saved:
     path:     /messages/sendmessage/saved/
     defaults: { _controller: profilesBundle:Messages:sendMessagesSaved } 
+
+profiles_messages_reset_seen:
+    path:     /messages/resetseen
+    defaults: { _controller: profilesBundle:Messages:resetSeen } 

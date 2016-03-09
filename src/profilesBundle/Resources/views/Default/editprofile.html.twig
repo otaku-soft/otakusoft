@@ -7,7 +7,7 @@
 
 
 <div class="tab-content list-group-item" >
-  <div role="tabpanel" class="tab-pane fade in active" id = "editprofilePersonal">
+  <div role="tabpanel" class="tab-pane fade{% if section == "" %} in active{% endif %}" id = "editprofilePersonal">
     <form id = "saveProfileForm" method= "post" action = "{{ path('profiles_editprofile_save') }}" enctype="multipart/form-data">
     	<button type = "submit" class = "btn btn-primary">Save</button><br/><br/>
     	{% for field in fields %}
@@ -16,7 +16,7 @@
     	<textarea style = "width:100%;height:200px;resize:none" name = "{{field.name }}" id = "saveProfile{{field.name }}">{{ field.value}} </textarea>
     	{% elseif field.options.type== "avatar" %}
     	<input type='file' name = "{{ field.name }}" id="editprofile{{ field.name }}" />
-    	<img id="editprofile{{ field.name }}Image" src="{{ asset('avatars/' ~field.value) }}" alt="" style = "max-width:250px" />
+    	<img id="editprofile{{ field.name }}Image" src="{{ asset('avatars/' ~field.value) }}" alt=""  />
     	<br/>
     	{% endif %}
     	{% endfor %}
@@ -35,7 +35,7 @@
     {% set order = '"order": [[ 1, "asc" ]]' %}
     {% include "searchdatatables.html.twig" %}
   </div>
-  <div role="tabpanel" class="tab-pane fade" id = "editprofileFriendRequests" >
+  <div role="tabpanel" class="tab-pane fade{% if section == "editprofileFriendRequests" %} in active{% endif %}" id = "editprofileFriendRequests" >
     {% set template = "profilesBundle:Default:friendsrequest.html.twig" %}
     {% set tablename = "friendsrequest" %}
     {% set customquery = "friendlist" %}
@@ -53,6 +53,8 @@ $( document ).ready(function()
   $("#editprofileavatar").change(function()
   {
     readURL(this);
+    $("#editprofileavatarImage").css("max-width","200px");
+    $("#editprofileavatarImage").css("max-height","200px");
   });
 
   $("#saveProfileForm").submit(function(event)
@@ -72,7 +74,12 @@ $( document ).ready(function()
       async: false,
       success: function (data)
       {
+        if (data == "saved")
         showAlert("Edit Profile","Profile Saved ^^");
+        if (data == "Bad image uploaded")
+        showAlert("Invalid file for avatar!");
+        if (data == "File Name too long")
+        showAlert("Avatar file name too long");
       },
       cache: false,
       contentType: false,
@@ -92,6 +99,7 @@ function friendRequest(friendotakuid)
   $.post(page, querystring).done(function(data) 
   {
     reloadFriendLists();
+    sendNotification("notifications" + friendotakuid);
   });
 }
 function removeFriend(friendotakuid)

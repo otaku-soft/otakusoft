@@ -15,3 +15,7 @@ _index_generateAuthenticateSessionId:
 _index_private_messages_count:
     pattern:  /privateMessagesCount
     defaults: { _controller: IndexIndexBundle:Header:privateMessagesCount }
+
+_index_subscribe:
+    pattern:  /subscribe/
+    defaults: { _controller: IndexIndexBundle:Header:subscribe }    

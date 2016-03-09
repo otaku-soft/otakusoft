@@ -1,0 +1,17 @@
+{% set otakuid = render(controller('IndexIndexBundle:Header:userid')) %}
+{% if otakuid != -1 %}
+{% set selected =  render(controller('IndexIndexBundle:Header:returnSubscription',{params: subscriptionParams}))  %}
+<strong>Subscription</strong>
+{% set subscribeString = "" %}
+{% for key, value in subscriptionParams %}
+{% if loop.index > 1 %}
+{% set subscribeString = subscribeString ~ "&" %}
+{% endif %}
+{% set subscribeString = subscribeString ~ key ~"=" ~ value %}
+{% endfor %}
+<select class = "form-control" onchange = "subscribe('{{ subscribeString }}')">
+	<option>No Subscription</option>
+	<option value = "subscribed" {{ selected }} >Subscription</option>
+</select>
+<br/>
+{% endif %}

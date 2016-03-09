@@ -4,7 +4,8 @@
 {% block content %}
 <a href = "{{ path('forum_index') }}">Index</a> /
 <a href = "{{ path('forum_inforum', {'forumid': forum.id,'title':forum.title,'pagenumber':1}) }}">{{ forum.title }}</a><br/><br/>
-
+{% set subscriptionParams  =  { type: 'topic',topicid:topic.id} %}
+{% include "subscribe.html.twig" %}
 <div class="panel panel-category">
 	<div class="panel-heading">Posts</div>
 	<div class="panel-body nospace" >
@@ -17,12 +18,11 @@
 				 <tr>
 				     <td  align = "center">
 				     	<span id = "post{{ post.id }}"></span>
-				     	<a href = "{{ path('profiles_viewprofile',{"id":post.otaku.id}) }}">
-					     	<label>{{ post.otaku.username }}</label><br/>
-					     	{% set avatartype = "profile" %}
-					     	{% set user = post.otaku %}
-					     	{% include "displayavatar.html.twig" %}
-				     	</a>
+
+				     	{% set avatartype = "profile" %}
+				     	{% set user = post.otaku %}
+				     	{% include "displayavatar.html.twig" %}
+				     	
 						Posts: {{ post.otaku.postCount}}
 				     </td>
 				     <td width = "100%" >
@@ -92,12 +92,10 @@ $( document ).ready(function()
 	        $.post(page, querystring) 
 	        .done(function(data) 
 	        {
-	        	socket.send("notifications{{ topic.otakuid }}");
-			    socket.on('message', function(msg)
-			    {
-			    	if (msg == "notifications{{ topic.otakuid }}")
-			    	window.location = data;
-			    });
+	        	data = JSON.parse(data);	        	
+	        	sendNotification(data.ids);	
+	        	showAlert('Thanks for the Post, Redirecting');
+	        	setTimeout(function(){ redirectTo(data.url) }, 3000);			   
 	        });
 		}
 	});
