@@ -98,5 +98,12 @@ class DefaultController extends Controller
         $session = $request->getSession();
         return new Response($session->get("_csrf/authenticate"));
     }
+    public function getOnlineUsersAction(Request $request)
+    {
+        $ids = explode(",",$request->request->get("ids"));
+        $repository = $this->getDoctrine()->getManager()->getRepository('classesclassBundle:otakus');
+        $users = $repository->findBy(array("id" => $ids  ));
+        return $this->render('onlineusers.html.twig',array("users" => $users));
+    }
 }
 ?>

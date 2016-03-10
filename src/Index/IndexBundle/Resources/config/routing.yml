@@ -19,3 +19,7 @@ _index_private_messages_count:
 _index_subscribe:
     pattern:  /subscribe/
     defaults: { _controller: IndexIndexBundle:Header:subscribe }    
+
+_index_getOnlineUsers:
+    pattern:  /getOnlineUsers
+    defaults: { _controller: IndexIndexBundle:Default:getOnlineUsers}

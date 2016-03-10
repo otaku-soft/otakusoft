@@ -4,10 +4,32 @@ server = http.createServer(function(req, res){});
 server.listen(8082);
 var socket = io.listen(server);
 var clients = {};
-
+function deleteClient(clients,key1,key2)
+{
+	if (typeof(clients[key1]) !=='undefined' &&  typeof(clients[key1][key2]) !=='undefined' )
+	{
+		var counter = 0;
+		delete clients[key1][key2];
+		for(var key in clients[key1]) 
+		counter++;
+		if (counter == 0)
+		delete clients[key1]; 
+	}
+}
 socket.on('connection', function(client)
 {
-	//console.log(socket['nsps']['/']['server']['eio']['clients']);
+	setTimeout(function()
+	{ 
+		for(var key in clients)
+	 	{
+			for(var key2 in clients[key])
+	 		{
+	 			if (typeof(socket.to(key2).connected[key2]) ==='undefined') 
+	 			deleteClient(clients,key,key2);
+	 		}
+	 	}
+		socket.emit("clients",clients); 
+	}, 60000);
 	client.on('setUserId',function(userid)
 	{
 		if(typeof(clients[userid[0]])==='undefined') 
@@ -17,21 +39,15 @@ socket.on('connection', function(client)
 		for(var key in clients[userid[0]]) 
 		{
 			if (typeof(socket.to(key).connected[key]) ==='undefined') 
-		    delete clients[userid[0]][key];
+			deleteClient(clients,userid[0],key);
 		}	
 		console.log(clients);
+		socket.to(userid[1]).emit('clients',clients);
 	});
 	client.on('removeUserId',function(userid)
 	{
-		
-		delete clients[userid[0]][userid[1]];	
-		counter = 0;
-        for(var key in clients[userid[0]]) 
-        counter++;
-        if (counter == 0)
-        delete clients[userid[0]]; 
+		deleteClient(clients,userid[0],userid[1]);
 		console.log(clients);
-
 	});	
 	client.on('message', function(msg)
 	{

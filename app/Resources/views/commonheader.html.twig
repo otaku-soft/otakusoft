@@ -40,15 +40,50 @@
     var errorMessage = "";
     var appendText = "";
     var inmessage = 0;
-    {% if userid != -1 %}
+    var activeUsers = Array();
+    
     socket =  io.connect("http://127.0.0.1:8082");
     
+
+    if ("{{ pagetitle }}" == "Messages")
+    sendNotificationSelfMessage();  
+
+    socket.on('clients', function(data)
+    {
+    	var onlinestring = "";
+		for(var key in data) 
+		{
+			activeUsers[key] = 1;
+			if (key != -1)
+			{
+				if (onlinestring != "")
+				onlinestring = onlinestring + ",";
+				onlinestring = onlinestring + key;
+			}
+		}
+		
+    	for(var key in activeUsers) 
+    	showStatus(key);
+
+    	var querystring = "ids=" + onlinestring;
+    	var page = "{{ path('_index_getOnlineUsers') }}";
+    	if (onlinestring != "")
+    	{
+			$.post(page, querystring).done(function(data) 
+			{
+				$("#whoisonline").html(data);
+			});    	
+		}
+		else
+		$("#whoisonline").html("No one is logged in right now");	
+
+    });
+	
     socket.on('connect', function () 
     {
       socket.emit('setUserId',[{{userid}},socket.id]);
     });
-    if ("{{ pagetitle }}" == "Messages")
-    sendNotificationSelfMessage();  
+    {% if userid != -1 %}
     socket.on('message', function(msg)
     {
       
@@ -95,6 +130,19 @@
         socket.emit('removeUserId',[{{userid}},socket.id]);
        
     });    
+    function showStatus(id)
+    {
+    	if (activeUser(id))
+    	$(".otakuUserOnline" + id).html('<span class="label label-success">Online</span>');
+    	else
+    	$(".otakuUserOnline" + id).html('');
+    }
+    function activeUser(id)
+    {
+    	if (typeof(activeUsers[id]) !== "undefined")
+ 		return true;
+ 		return false;
+    }
     function showAlert(title,message,titleClass,messageClass)
     {
         $("#alertModalLabel").html("");
@@ -183,6 +231,10 @@
       id = "saved-alert";
       $("#" + id).show();
       $('html, body').animate({ scrollTop: 0 }, 0);
+	  setTimeout(function()
+	  { 
+	  	$("#" + id).hide();
+	  },2000);
     }
     function redirectTo(page)
     {

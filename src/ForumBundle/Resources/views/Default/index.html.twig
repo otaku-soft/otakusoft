@@ -15,30 +15,30 @@
 		<table class="table nospace" style = "table-layout:fixed;" >
 		  <thead>
 		  	<tr>
-		  		<th colspan = "3">Name</th>
-		  		<th colspan = "3" >Description</th>
-		  		<th colspan = "2">Topics/Posts</th>
+		  		<th colspan = "2">Name</th>
+		  		<th colspan = "2" >Description</th>
+		  		<th>Topics/Posts</th>
 		  		
-		  		<th colspan = "2">Last Post</th>
-		  		<th colspan = "2">Time</th>
-		  		<th>Poster</th>
+		  		<th >Last Post</th>
+		  		<th >Time</th>
+		  		<th >Poster</th>
 		  	</tr>
 		  </thead>
 		  <tbody>
 		  {% for forum in category.forums %}
 		  	<tr>
-		  		<td colspan = "3"><a href = "{{ path('forum_inforum', {'forumid': forum.id,'title':forum.title}) }}">{{ forum.title }}</a></td>
-		  		<td colspan = "3">{{ forum.description}}</td>
+		  		<td colspan = "2"><a href = "{{ path('forum_inforum', {'forumid': forum.id,'title':forum.title}) }}">{{ forum.title }}</a></td>
+		  		<td colspan = "2">{{ forum.description}}</td>
 
 		  		{% if forum.lastTopic is not defined  %}
-		  		<td colspan = "7">
+		  		<td colspan = "4">
 		  		
 		  		</td>
 		  		{% else %}
 		  		{% set dateField = forum.lastActivity %}
-		  		<td colspan = "2">{{ forum.topicCount }}/{{ forum.postCount }}</td>
-		  		<td colspan = "2"><a href = "{{ path('forum_intopic', {'topicid': forum.lastTopic.id,'title':forum.lastTopic.title}) }}?newpost=true">{{ forum.lastTopic.title }}</a></td>
-		  		<td colspan = "2"> {{ include ("displaydate.html.twig") }}</td>
+		  		<td>{{ forum.topicCount }}/{{ forum.postCount }}</td>
+		  		<td ><a href = "{{ path('forum_intopic', {'topicid': forum.lastTopic.id,'title':forum.lastTopic.title}) }}?newpost=true">{{ forum.lastTopic.title }}</a></td>
+		  		<td > {{ include ("displaydate.html.twig") }}</td>
 		  		<td>
 		  			{% set user = forum.lastPoster %}
 					{% include "inlineavatar.html.twig" %}

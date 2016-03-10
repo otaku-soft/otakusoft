@@ -16,7 +16,7 @@
 				{% for post in posts %}
 				{% set lastpostid = post.id %}
 				 <tr>
-				     <td  align = "center">
+				     <td  align = "center" width = "200">
 				     	<span id = "post{{ post.id }}"></span>
 
 				     	{% set avatartype = "profile" %}
@@ -25,7 +25,7 @@
 				     	
 						Posts: {{ post.otaku.postCount}}
 				     </td>
-				     <td width = "100%" >
+				     <td  >
 				     	{% if loop.index == 1 %}
 				     	{{ title }}
 				     	<hr/>

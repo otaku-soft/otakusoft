@@ -5,23 +5,30 @@
 
 {% if avatartype == "inline" %}
 	<a href = "{{ path('profiles_viewprofile',{"id":user.id}) }}">
+	
 	{{  user.username}}  
 
-	<img src = "{{ asset(avatar) }}" alt = "" style = "max-height:20px" class ="avatarimage" /></a><br/>
+
+	<img src = "{{ asset(avatar) }}" alt = "" style = "max-height:20px" class ="avatarimage" /></a>
+	<span class ="otakuUserOnline{{user.id}}"></span>
 {% endif %}
 {% if avatartype == "profile" %}
 	<a href = "{{ path('profiles_viewprofile',{"id":user.id}) }}">
 		<label>{{ user.username }}</label><br/>
 		<img src = "{{ asset(avatar) }}" alt = ""  class ="avatarimage" />
 		<br/>
+		
 	</a>
+	<h3 class ="otakuUserOnline{{user.id}}"></h3><br/>
 {% endif %}
 
 <script>
-$( document ).ready(function() {
+$( document ).ready(function() 
+{
   $(".avatarimage").error(function () 
   { 
     $(this).hide();
   });
+  showStatus({{user.id}});
 });
 </script>
