@@ -372,7 +372,11 @@
       });
 
     }
-
+    function logout()
+    {
+    	socket.emit('removeUserId',[{{userid}},socket.id]);
+    	window.location = "{{ path('fos_user_security_logout') }}";
+    }
 
 
     </script>
