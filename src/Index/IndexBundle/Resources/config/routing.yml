@@ -23,3 +23,11 @@ _index_subscribe:
 _index_getOnlineUsers:
     pattern:  /getOnlineUsers
     defaults: { _controller: IndexIndexBundle:Default:getOnlineUsers}
+
+_index_otakuImages:
+    pattern:  /otakuImages/
+    defaults: { _controller: IndexIndexBundle:Header:otakuImages }
+
+_index_otakuImagesUpload:
+    pattern:  /otakuImagesUpload/
+    defaults: { _controller: IndexIndexBundle:Header:otakuImagesUpload }

@@ -1,0 +1,58 @@
+
+
+
+<div id ="imageContainer">
+	{% set ajaxContainer = "imageContainer" %}
+	{% set paginationPath = '_index_otakuImages' %}
+	{% set pagination = {} %}
+	{% include "pagination.html.twig" %}
+	<form id ="addImage" action= "{{ path('_index_otakuImagesUpload') }}">
+		<input type="file" name = "avatar" id="uploadUserFile" />
+		<div id ="uploadUserFileDiv" style ="display:none" ><img src = "" id="uploadUserFileImage"  /></div>
+		
+		<button class ="btn btn-success" style = "margin-top:20px">Add New Image</button>
+	</form>	
+	{% for image in images %}
+	{% set dateField = image.dateuploaded %}
+	{% if loop.index > 1 %}<hr/>{% endif %}
+	<h3>{{ image.name }} <span class ="pull-right">{% include "displaydate.html.twig" %}</span></h3>
+	<img src = "{{ asset('UserImages/' ~ image.filename) }}" style ="max-height:200px" />
+	<br/><br/>
+	<input type = "text" readonly value = "{{ asset(app.request.schemeAndHttpHost ~ '/UserImages/' ~ image.filename) }}" id ="otakusImages{{image.id}}" onclick ="select_all(this.id)" class ="form-control" />
+	{% endfor %}
+
+	{% include "pagination.html.twig" %}
+	<script>
+	$( "#addImage" ).submit(function( event ) 
+	{
+	    event.preventDefault();
+	  	var formData = new FormData($("#addImage")[0]);
+	    $.ajax(
+	    {
+	      url:$(this).attr("action"),
+	      type: 'POST',
+	      data: formData,
+	      async: false,
+	      success: function (data)
+	      {
+
+	      	gotopage('{{path(paginationPath)}}','imageContainer');
+	      },
+	      cache: false,
+	      contentType: false,
+	      processData: false
+	      
+	    });
+
+	});
+	$("#uploadUserFile").change(function()
+	{
+		$("#uploadUserFileDiv").show();
+	    $("#uploadUserFileImage").css("max-height","200px");
+		readURL(this);
+		
+	});
+
+	</script>
+</div>
+

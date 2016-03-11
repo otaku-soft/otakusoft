@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use classes\classBundle\Entity\otakus;
 use classes\classBundle\Entity\subscriptions;
+use classes\classBundle\Entity\otakusImages;
 use classes\classBundle\Classes\otakusClass;
 use classes\classBundle\Classes\functionsClass;
 class HeaderController extends Controller
@@ -70,6 +71,56 @@ class HeaderController extends Controller
         $em->remove($subscription);
         $em->flush();
         return new Response("");
+    }
+
+    public function otakuImagesAction()
+    {
+        $request = Request::createFromGlobals();
+        $request->getPathInfo();
+        $em = $this->getDoctrine()->getManager();
+        $otakusClass = new otakusClass($this);
+        $functionsClass = new functionsClass($this);
+        $connection = $this->get('doctrine.dbal.default_connection');
+        $pagenumber = $request->query->get("pagenumber",1);
+        $otakuid = $otakusClass->getId();
+        $offset = $functionsClass->navigationOffset($pagenumber);
+        $repository = $em->getRepository('classesclassBundle:otakusImages');
+        $images = $repository->findBy(array("otakuid" => $otakuid),array("id" => "DESC"),10,$offset);
+        $count = $functionsClass->getCountById("otakusImages",array("otakuid" => $otakuid));
+        $totalPages = $functionsClass->navigationTotalPages($count);
+
+        return $this->render("otakusimages.html.twig", array("images" => $images,"totalPages" => $totalPages,"otakuid" => $otakuid,"pagenumber" => $pagenumber,"count" => $count));
+    }
+    public function otakuImagesUploadAction(Request $request)
+    {
+        $files = $_FILES;
+        $path = "/var/www/web/UserImages/";
+        $otakusClass = new otakusClass($this);
+        $em = $this->getDoctrine()->getManager();
+        foreach ($files as $key =>$uploadedFile) 
+        {
+            $otakusImages = new otakusImages();
+            $imageProperties = @getimagesize($uploadedFile["tmp_name"]);
+
+            if (!$imageProperties)
+            return new Response("Bad image uploaded");
+
+            $uploadedFile['name'] = filter_var($uploadedFile['name'],FILTER_SANITIZE_EMAIL);
+            while(file_exists($path.$uploadedFile['name']))
+            $uploadedFile['name'] = rand(0,9).$uploadedFile['name'];
+
+            if (move_uploaded_file($uploadedFile["tmp_name"],
+            $path.$uploadedFile["name"]))
+            {
+                $otakusImages->filename = $uploadedFile['name']; 
+                $otakusImages->otakuid = $otakusClass->getId();
+                $em->persist($otakusImages);
+                $em->flush();
+                return new Response("saved");
+            }
+        }
+        
+        return new Response("failed to upload");
     }
 }
 ?>
