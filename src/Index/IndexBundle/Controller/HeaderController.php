@@ -100,7 +100,7 @@ class HeaderController extends Controller
     public function otakuImagesUploadAction(Request $request)
     {
         $files = $_FILES;
-        $path = "/var/www/web/UserImages/";
+        $path = getcwd()."/UserImages/";
         $otakusClass = new otakusClass($this);
         $em = $this->getDoctrine()->getManager();
         foreach ($files as $key =>$uploadedFile) 
@@ -120,6 +120,7 @@ class HeaderController extends Controller
             {
                 $otakusImages->filename = $uploadedFile['name']; 
                 $otakusImages->otakuid = $otakusClass->getId();
+                $otakusImages->dateuploaded = new \DateTime("now");
                 $em->persist($otakusImages);
                 $em->flush();
                 return new Response("saved");
