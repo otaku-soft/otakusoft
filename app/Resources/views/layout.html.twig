@@ -1,3 +1,5 @@
+{% set currentuser = render(controller('IndexIndexBundle:Header:user')) | json_decode %}
+{% set userid = render(controller('IndexIndexBundle:Header:userid')) %}
 {% include "header.html.twig" %}
 {% block content %}{% endblock %}
 {% include "footer.html.twig" %}

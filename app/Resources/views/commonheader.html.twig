@@ -8,7 +8,7 @@
     <meta name="author" content="">
     <link rel="icon" href="favicon.ico">
 
-    <title>{{ pagetitle }}</title>
+    <title>{{ pagetitle }} </title>
     <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
    <script src="{{ asset('js/jquery.js') }}"></script>
     <script src="{{ asset('js/jquery.validate.js') }}"></script>
@@ -33,16 +33,18 @@
     <![endif]-->
     <link href="{{ asset('css/jquery.dataTables.css') }}" rel="stylesheet">
     <script src ="{{ asset('//cdn.datatables.net/1.10.6/js/jquery.dataTables.min.js') }}"></script>
-    <script src="http://localhost:8082/socket.io/socket.io.js"></script>
+    <script src="{{ app.request.getSchemeAndHttpHost() }}:8082/socket.io/socket.io.js"></script>
     {% include "tinymce.html.twig" %}
-    {% set userid = render(controller('IndexIndexBundle:Header:userid')) %}
+
+    
+   
     <script>
     var errorMessage = "";
     var appendText = "";
     var inmessage = 0;
     var activeUsers = Array();
     
-    socket =  io.connect("http://127.0.0.1:8082");
+    socket =  io.connect("{{ app.request.getSchemeAndHttpHost() }}:8082");
     
 
     if ("{{ pagetitle }}" == "Messages")

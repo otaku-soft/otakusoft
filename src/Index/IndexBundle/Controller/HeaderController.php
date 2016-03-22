@@ -12,7 +12,7 @@ use classes\classBundle\Classes\otakusClass;
 use classes\classBundle\Classes\functionsClass;
 class HeaderController extends Controller
 {
-    public function indexAction()
+    public function indexAction($currentuser)
     {
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('classesclassBundle:contentCategories');
@@ -28,13 +28,19 @@ class HeaderController extends Controller
                 $section->subSection =  $repository->findBy(array("contentCategoryid" => $category->id,"contentSectionid" => $section->id) );
             }
         }
-        return $this->render("navigation.html.twig",array("categories" => $categories));
+        return $this->render("navigation.html.twig",array("categories" => $categories,"currentuser" => $currentuser));
     }
     public function privateMessagesCountAction()
     {
         $otakusClass = new otakusClass($this);        
         $messages = $this->getDoctrine()->getManager()->getRepository('classesclassBundle:privateMessages')->findBy(array("tootakuid" =>$otakusClass->getId(),"seen" => 0));
         return new Response(count($messages));
+    }
+    public function userAction()
+    {
+        $otakusClass = new otakusClass($this); 
+        //var_dump($otakusClass->user);
+        return new Response(json_encode($otakusClass->getSqlUser()));
     }
     public function useridAction()
     {

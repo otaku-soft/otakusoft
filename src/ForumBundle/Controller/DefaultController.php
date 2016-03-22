@@ -167,6 +167,7 @@ class DefaultController extends Controller
             $posts->message = str_replace('../../','/',$posts->message);
             $em->persist($posts);
             $em->flush();
+            $otakusClass->incrementNyanPoints(10);
             return new Response($this->generateUrl('forum_intopic',array("topicid" => $topics->id,"title" => $topics->title,"pagenumber"=> 1)));
         }
         return "";
@@ -248,6 +249,7 @@ class DefaultController extends Controller
                 }
             }
             $em->flush();
+            $otakusClass->incrementNyanPoints(5);
             $response = array("url" => $this->generateUrl('forum_intopic',array("topicid" => $topic->id,"title" => $topic->title,"pagenumber"=> 1))."&newpost=true","ids" => $sendString);
             return new Response(json_encode($response));          
         }

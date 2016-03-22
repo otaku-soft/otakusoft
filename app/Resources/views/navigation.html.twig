@@ -43,6 +43,7 @@
             <li><a href = "javascript:ajaxModal('{{ path('notifications_messages') }}','Notifications')">Notifications <span class="badge" id = "notificationscount">{{ render(controller('notificationsBundle:Default:notificationsCount')) }}</span></a></li>
             <li><a href ="javascript:ajaxModal('{{path('_index_otakuImages')}}','Your Images','large')">Images</a></li>
             <li><a href = "javascript:logout()">Logout</a></li>
+            <li style ="position:absolute;left:83%"><a style ="font-weight:bold;color:yellow;">Nyan Points: {{currentuser.nyanPoints}}</a></li>
             {% else %}
             
             <li><a href = "javascript:ajaxModal('/login','Log in','small',false)">Login</a></li>

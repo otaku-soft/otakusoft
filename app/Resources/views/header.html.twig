@@ -4,7 +4,7 @@
 <body   style = "padding:0px;margin:0px;background-color:black !important;background-image:url(/images/bg5.png);background-repeat:repeat-x"
 >
 
-{{ render(controller('IndexIndexBundle:Header:index')) }}
+{{ render(controller('IndexIndexBundle:Header:index',{'currentuser':currentuser})) }}
 	
     <!-- Begin page content -->
     <div class="container" style = "background-color:white;padding:0px;padding-top:30px;overflow-x:hidden;min-height:1080px;width:85%" >

@@ -218,7 +218,7 @@ class DefaultController extends Controller
 
             }
             $files = $_FILES;
-            $path = "/var/www/web/avatars/";
+            $path =  getcwd()."/avatars/";
             $urlpath = "/avatars/";
             
             foreach ($files as $key =>$uploadedFile) 
