@@ -11,7 +11,8 @@ class functionsClass
     public function __construct($controller)
     {
         $this->controller = $controller;
-        $this->db = mysqli_connect("localhost","root","localpass","otakusoft") or die("Error " . mysqli_error($link)); 
+        global $kernel;
+        $this->db = mysqli_connect($kernel->getContainer()->getParameter("database_host"),$kernel->getContainer()->getParameter("database_user"),$kernel->getContainer()->getParameter("database_password"),$kernel->getContainer()->getParameter("database_name")) or die("Error " . mysqli_error($link)); 
     }
     public function escapeString($string)
     {
