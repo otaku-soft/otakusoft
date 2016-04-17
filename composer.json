@@ -34,7 +34,6 @@
         "incenteev/composer-parameter-handler": "~2.0",
         "braincrafted/bootstrap-bundle": "~2.0",
         "twbs/bootstrap": "3.0.*",
-        "jquery/jquery":  "1.10.*",
     	"knplabs/knp-menu-bundle": "~2.0",
     	"knplabs/knp-menu":"~2.0",
     	"knplabs/knp-paginator-bundle": "~2.4",
