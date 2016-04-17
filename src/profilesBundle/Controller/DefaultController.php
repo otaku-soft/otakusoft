@@ -1,23 +1,18 @@
 <?php
-
 namespace profilesBundle\Controller;
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use classes\classBundle\Classes\otakusClass;
-use classes\classBundle\Classes\functionsClass;
 use classes\classBundle\Entity\friends;
 use classes\classBundle\Entity\visitorMessages;
 use classes\classBundle\Entity\notifications;
-
 class DefaultController extends Controller
 {
 	public $fields;
     public function viewProfileAction($id)
     {
     	$em = $this->getDoctrine()->getManager();
-        $otakusClass = new otakusClass($this);
+        $otakusClass = $this->get("otakuClass");
         $request = Request::createFromGlobals();
         $request->getPathInfo();
     	$repository = $em->getRepository('classesclassBundle:otakus');
@@ -28,7 +23,7 @@ class DefaultController extends Controller
         if ($friend != null)
         $friend = true;
     	$this->fields($otaku);
-    	$functionsClass = new functionsClass($this);
+    	$functionsClass = $this->get("functionsClass");
     	$tabs = array();
     	$functionsClass->addfield($tabs,"viewprofilePersonalInformation","Info");
     	$functionsClass->addfield($tabs,"viewprofileTopics","Topics Started");
@@ -45,7 +40,7 @@ class DefaultController extends Controller
     }
     public function addFriendButtonAction()
     {
-        $otakusClass = new otakusClass($this);
+        $otakusClass = $this->get("otakuClass");
         $request = Request::createFromGlobals();
         $request->getPathInfo();
         if ($otakusClass->isRole("USER") && $otakusClass->getId() != $request->request->get('friendotakuid',""))
@@ -71,12 +66,12 @@ class DefaultController extends Controller
     }
     public function indexAction()
     {
-        $functionsClass = new functionsClass($this);
+        $functionsClass = $this->get("functionsClass");
         $em = $this->getDoctrine()->getManager();
         $connection = $this->get('doctrine.dbal.default_connection');
         $request = Request::createFromGlobals();
         $request->getPathInfo();
-        $otakusClass = new otakusClass($this);
+        $otakusClass = $this->get("otakuClass");
         $pagenumber = $request->query->get("pagenumber",1);
         $offset = $functionsClass->navigationOffset($pagenumber);
         $repository = $em->getRepository('classesclassBundle:otakus');
@@ -104,8 +99,8 @@ class DefaultController extends Controller
 
     public function editProfileAction()
     {
-        $otakusClass = new otakusClass($this);
-        $functionsClass = new functionsClass($this);
+        $otakusClass = $this->get("otakuClass");
+        $functionsClass = $this->get("functionsClass");
         $request = Request::createFromGlobals();
         $request->getPathInfo();
         if ($otakusClass->isRole("USER"))
@@ -125,7 +120,7 @@ class DefaultController extends Controller
     }
     public function sendFriendRequestAction()
     {
-        $otakusClass = new otakusClass($this);
+        $otakusClass = $this->get("otakuClass");
         $request = Request::createFromGlobals();
         $request->getPathInfo();
         if ($otakusClass->isRole("USER"))
@@ -176,7 +171,7 @@ class DefaultController extends Controller
     }
     public function removeFriendAction()
     {
-        $otakusClass = new otakusClass($this);
+        $otakusClass = $this->get("otakuClass");
         $request = Request::createFromGlobals();
         $request->getPathInfo();
         if ($otakusClass->isRole("USER"))
@@ -199,8 +194,8 @@ class DefaultController extends Controller
     }
     public function editProfileSaveAction()
     {
-        $otakusClass = new otakusClass($this);
-        $functionsClass = new functionsClass($this);
+        $otakusClass = $this->get("otakuClass");
+        $functionsClass =$this->get("functionsClass");
         if ($otakusClass->isRole("USER"))
         {
             $em = $this->getDoctrine()->getManager();
@@ -279,7 +274,7 @@ class DefaultController extends Controller
     function fields($otaku = null)
     {
     	$this->fields = array();
-    	$functionsClass = new functionsClass($this);
+    	$functionsClass = $this->get("functionsClass");
     	$functionsClass->addfield($this->fields,"avatar","Avatar",array("type" => "avatar")); 
     	$functionsClass->addfield($this->fields,"email","Email", array("type" => "text","email" => true,"profiledisplay" => false));
     	$functionsClass->addfield($this->fields,"aboutme","About Me",array("type" => "textarea"));
@@ -304,7 +299,7 @@ class DefaultController extends Controller
     function getTopicsAction()
     {
     	$em = $this->getDoctrine()->getManager();
-    	$functionsClass = new functionsClass($this);
+    	$functionsClass = $this->get("functionsClass");
         $request = Request::createFromGlobals();
         $request->getPathInfo();
         $pagenumber = $request->query->get("pagenumber",1);
@@ -321,7 +316,7 @@ class DefaultController extends Controller
     function getPostsAction()
     {
     	$em = $this->getDoctrine()->getManager();
-    	$functionsClass = new functionsClass($this);
+    	$functionsClass = $this->get("functionsClass");
     	$connection = $this->get('doctrine.dbal.default_connection');
         $request = Request::createFromGlobals();
         $request->getPathInfo();
@@ -349,7 +344,7 @@ class DefaultController extends Controller
     function getVisitorsMessagesAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $functionsClass = new functionsClass($this);
+        $functionsClass = $this->get("functionsClass");
         $connection = $this->get('doctrine.dbal.default_connection');
         $request = Request::createFromGlobals();
         $request->getPathInfo();
@@ -372,7 +367,7 @@ class DefaultController extends Controller
     function addVisitorMessageAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $otakusClass = new otakusClass($this);
+        $otakusClass = $this->get("otakuClass");
         $visitorMessages = new visitorMessages();
         $friendotakuid = $otakusClass->getId();
         $request = Request::createFromGlobals();

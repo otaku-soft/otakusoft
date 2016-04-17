@@ -3,4 +3,10 @@ parameters:
 
 services:
     generalfunctions:
-        class: classes\classBundle\Controller\DefaultController
+     class: classes\classBundle\Controller\DefaultController
+    functionsClass:
+     class: classes\classBundle\Classes\functionsClass    
+     arguments:    [@service_container,@doctrine.orm.entity_manager]
+    OtakuClass:
+     class: classes\classBundle\Classes\otakusClass 
+     arguments:    [@service_container,@doctrine.orm.entity_manager]  

@@ -5,8 +5,6 @@ namespace profilesBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use classes\classBundle\Classes\otakusClass;
-use classes\classBundle\Classes\functionsClass;
 use classes\classBundle\Entity\friends;
 use classes\classBundle\Entity\privateMessages;
 class MessagesController extends Controller
@@ -14,8 +12,8 @@ class MessagesController extends Controller
 
     public function indexAction()
     {
-    	$otakusClass = new otakusClass($this);
-        $functionsClass = new functionsClass($this);
+    	$otakusClass = $this->get("otakuClass");
+        $functionsClass = $this->get("functionsClass");
 
         $this->resetSeen();
 
@@ -30,7 +28,7 @@ class MessagesController extends Controller
     }
     public function resetSeen()
     {
-        $otakusClass = new otakusClass($this);
+        $otakusClass = $this->get("otakuClass");
         $messages = $this->getDoctrine()->getManager()->getRepository('classesclassBundle:privateMessages')->findBy(array("tootakuid" =>$otakusClass->getId(),"seen" => 0));
         foreach ($messages as $message)
         {
@@ -45,7 +43,7 @@ class MessagesController extends Controller
     }
     public function sendMessageAction()
     {
-    	$otakusClass = new otakusClass($this);
+    	$otakusClass = $this->get("otakuClass");
     	if ($otakusClass->isRole("USER"))
         {
 	        $request = Request::createFromGlobals();
@@ -70,8 +68,8 @@ class MessagesController extends Controller
 
     public function sendMessagesSavedAction()
     {
-    	$otakusClass = new otakusClass($this);
-    	$functionsClass = new functionsClass($this);
+    	$otakusClass = $this->get("otakuClass");
+    	$functionsClass =$this->get("functionsClass");
     	if ($otakusClass->isRole("USER"))
         {
         	$privateMessages = new privateMessages();

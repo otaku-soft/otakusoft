@@ -1,17 +1,12 @@
 <?php
-
 namespace classes\classBundle\Controller;
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use classes\classBundle\Classes\functionsClass;
-error_reporting(0);
 class DefaultController extends Controller
 {
     public $searchQuery;
     public $searchQueryCount;
-
     public function updateAction()//generic update method
     {
         try
@@ -223,7 +218,7 @@ class DefaultController extends Controller
         "recordsTotal": '.$recordsTotal.',
         "recordsFiltered": '.$recordsFiltered.',
         "data": [';
-        $generalMethods = new functionsClass($this);
+        $generalMethods = $this->get("functionsClass");
         $jsoncontent = $this->render($template, array('items' => $items,'request' => $request))->getContent();
         $generalMethods->datatablesFilterJson($jsoncontent);
         $jsonfooter = ']
@@ -256,7 +251,6 @@ class DefaultController extends Controller
         }
 
     }
-
     public function searchDatatablesAction()
     {
         return new Response($this->searchDatatablesVariable());
@@ -297,7 +291,7 @@ class DefaultController extends Controller
         }
         return $out;
     }
-    function searchTemplateAction($options)
+    public function searchTemplateAction($options)
     {
         return    $this->render($options->searchtemplate, array("options" => $options));
     }

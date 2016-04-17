@@ -8,8 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 use classes\classBundle\Entity\otakus;
 use classes\classBundle\Entity\subscriptions;
 use classes\classBundle\Entity\otakusImages;
-use classes\classBundle\Classes\otakusClass;
-use classes\classBundle\Classes\functionsClass;
 class HeaderController extends Controller
 {
     public function indexAction($currentuser)
@@ -32,25 +30,25 @@ class HeaderController extends Controller
     }
     public function privateMessagesCountAction()
     {
-        $otakusClass = new otakusClass($this);        
+        $otakusClass = $this->get("OtakuClass");  
         $messages = $this->getDoctrine()->getManager()->getRepository('classesclassBundle:privateMessages')->findBy(array("tootakuid" =>$otakusClass->getId(),"seen" => 0));
         return new Response(count($messages));
     }
     public function userAction()
     {
-        $otakusClass = new otakusClass($this); 
+        $otakusClass = $this->get("OtakuClass");  
         //var_dump($otakusClass->user);
         return new Response(json_encode($otakusClass->getSqlUser()));
     }
     public function useridAction()
     {
-        $otakusClass = new otakusClass($this); 
+        $otakusClass = $this->get("OtakuClass");  
         return new Response($otakusClass->getId());
     }
     public function returnSubscriptionAction($params)
     {
         $em = $this->getDoctrine()->getManager();
-        $otakusClass = new otakusClass($this);
+        $otakusClass = $this->get("OtakuClass");  
         $repository = $em->getRepository('classesclassBundle:subscriptions');
         $params = array_merge(array("otakuid" => $otakusClass->getId()),$params);
         $subscription =  $repository->findBy($params);
@@ -60,7 +58,7 @@ class HeaderController extends Controller
     }
     function subscribeAction(Request $request)
     {
-        $otakusClass = new otakusClass($this);
+        $otakusClass = $this->get("OtakuClass");  
         $em = $this->getDoctrine()->getManager();
         $repository = $em->getRepository('classesclassBundle:subscriptions');
         $params = $request->request->all();
@@ -84,8 +82,8 @@ class HeaderController extends Controller
         $request = Request::createFromGlobals();
         $request->getPathInfo();
         $em = $this->getDoctrine()->getManager();
-        $otakusClass = new otakusClass($this);
-        $functionsClass = new functionsClass($this);
+        $otakusClass =$this->get("OtakuClass");  
+        $functionsClass =$this->get("functionsClass"); 
         $connection = $this->get('doctrine.dbal.default_connection');
         $pagenumber = $request->query->get("pagenumber",1);
         $otakuid = $otakusClass->getId();
@@ -101,7 +99,7 @@ class HeaderController extends Controller
     {
         $files = $_FILES;
         $path = getcwd()."/UserImages/";
-        $otakusClass = new otakusClass($this);
+        $otakusClass = $this->get("OtakuClass");
         $em = $this->getDoctrine()->getManager();
         foreach ($files as $key =>$uploadedFile) 
         {

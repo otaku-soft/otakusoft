@@ -6,15 +6,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use classes\classBundle\Entity\otakus;
-use classes\classBundle\Classes\otakusClass;
-use classes\classBundle\Classes\functionsClass;
 class DefaultController extends Controller
 {
 	public $fields;
     public function indexAction()
     {
         $this->init();
-        $otakusClass = new otakusClass($this);
+        $otakusClass = $this->get("OtakuClass");
         if ($otakusClass->isRole("USER"))
         return $this->redirect($this->generateUrl('forum_index'));    
 
@@ -23,7 +21,7 @@ class DefaultController extends Controller
     function init()
     {
         $this->fields = array();
-        $functionsClass = new functionsClass($this);
+        $functionsClass = $this->get("functionsClass"); 
     	$functionsClass->addfield($this->fields,"username","Username",array("type" => "text","minlength" => 5));
     	$functionsClass->addfield($this->fields,"email","Email", array("type" => "text","email" => true));
     	$functionsClass->addfield($this->fields,"password","Password",array("type" => "password","minlength" => 6));

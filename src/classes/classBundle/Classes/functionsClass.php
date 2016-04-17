@@ -1,16 +1,17 @@
 <?php
-
 namespace classes\classBundle\Classes;
+use Doctrine\ORM\EntityManager;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\Request;
-
 class functionsClass
 {
-    public $controller;
+    public $container;
     public $db;
-    public function __construct($controller)
+    public function __construct(ContainerInterface $container,EntityManager $em)
     {
-        $this->controller = $controller;
+        $this->container = $container;
+        $this->em = $em;
         global $kernel;
         $this->db = mysqli_connect($kernel->getContainer()->getParameter("database_host"),$kernel->getContainer()->getParameter("database_user"),$kernel->getContainer()->getParameter("database_password"),$kernel->getContainer()->getParameter("database_name")) or die("Error " . mysqli_error($link)); 
     }
@@ -39,7 +40,7 @@ class functionsClass
 
     public function getCountById($table,$parameters = array())
     {
-        $connection = $this->controller->get('doctrine.dbal.default_connection');
+        $connection = $this->container->get('doctrine.dbal.default_connection');
         $parameterString = "";
         foreach ($parameters as $key => $value)
         {

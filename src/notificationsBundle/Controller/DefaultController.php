@@ -1,20 +1,15 @@
 <?php
-
 namespace notificationsBundle\Controller;
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use classes\classBundle\Classes\otakusClass;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use classes\classBundle\Classes\functionsClass;
-
 class DefaultController extends Controller
 {
     public function indexAction(Request $request)
     {
     	$em = $this->getDoctrine()->getManager();
-    	$functionsClass = new functionsClass($this);
-    	$otakusClass = new otakusClass($this);
+    	$functionsClass = $this->get("functionsClass"); 
+    	$otakusClass = $this->get("OtakuClass");
     	$repository = $em->getRepository('classesclassBundle:notifications');
     	$pagenumber = $request->query->get("pagenumber",1);
     	$connection = $this->get('doctrine.dbal.default_connection');
@@ -67,8 +62,8 @@ class DefaultController extends Controller
     }
     public function notificationsCountAction()
     {
-    	$functionsClass = new functionsClass($this);
-    	$otakusClass = new otakusClass($this);
+    	$functionsClass = $this->get("functionsClass"); 
+    	$otakusClass = $this->get("OtakuClass");
     	return new Response ($functionsClass->getCountById("notifications",array("otakuid" => $otakusClass->getId(),"seen" => 0)));
     }
 }

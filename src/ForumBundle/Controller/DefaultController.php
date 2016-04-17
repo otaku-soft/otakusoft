@@ -1,12 +1,8 @@
 <?php
-
 namespace ForumBundle\Controller;
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use classes\classBundle\Classes\otakusClass;
-use classes\classBundle\Classes\functionsClass;
 use classes\classBundle\Entity\topics;
 use classes\classBundle\Entity\posts;
 use classes\classBundle\Entity\notifications;
@@ -46,38 +42,28 @@ class DefaultController extends Controller
         }
         return $this->render('ForumBundle:Default:index.html.twig',array("categories" => $categories) );
     }
-
-
-
     public function topicAndPostCounts($forumid)
     {
-        $functionsClass = new functionsClass($this);
+        $functionsClass = $this->get("functionsClass");
         $topicCount = $functionsClass->getCountById("topics",array("forumid" => $forumid));
         $postCount = $functionsClass->getCountById("posts",array("forumid" => $forumid));
         return array("topicCount" => $topicCount,"postCount" => $postCount);
     }
     public function inforumSearchAction($forumid = "all")
     {
-
         $connection = $this->get('doctrine.dbal.default_connection');
-        $functionsClass = new functionsClass($this);
+        $functionsClass = $this->get("functionsClass");
         $message = urldecode($functionsClass->escapeString($this->get("request")->query->get("search")));
         $pagenumber = $functionsClass->escapeString($this->get("request")->query->get("pagenumber",1));
         $forumid = $functionsClass->escapeString($forumid);
         $offset = $functionsClass->navigationOffset($pagenumber);
-
         if ($forumid == "all")
         $forumidsql = "";
         else
         $forumidsql = "AND topics.forumid = ".$forumid;
         //$forumidsql =  " AND (topics.forumid=".$forumid." AND posts.forumid = ".$forumid.')';
-
-
-
         $sql = 'SELECT topics.id as id, topics.title as title, posts.message as message,posts.id as postid  FROM topics LEFT join posts on topics.id = posts.topicid AND message LIKE "%'.$message.'%" WHERE (title LIKE "%'.$message.'%" OR message like "%'.$message.'%") '.$forumidsql.' LIMIT '.$offset.',10';
-
         $topics = $connection->executeQuery($sql)->fetchAll();
-
         foreach ($topics as &$topic)
         {
             if ($topic['message'] != null)
@@ -100,7 +86,7 @@ class DefaultController extends Controller
     public function inforumAction($forumid,$title)
     {
         $em = $this->getDoctrine()->getManager();
-        $functionsClass = new functionsClass($this);
+        $functionsClass = $this->get("functionsClass");
         $request = Request::createFromGlobals();
         $request->getPathInfo();
         $pagenumber = $request->query->get("pagenumber",1);
@@ -108,18 +94,13 @@ class DefaultController extends Controller
         $forum = $repository->findOneBy(array("id" => $forumid));
         $categoryid = $forum->categoryid;
         $offset = $functionsClass->navigationOffset($pagenumber);
-
         $totalPosts = $functionsClass->getCountById("posts",array("forumid" => $forumid));
         $totalTopics = $functionsClass->getCountById("topics",array("forumid" => $forumid));
         $totalPages = $functionsClass->navigationTotalPages($totalTopics);
-
         $repository = $em->getRepository('classesclassBundle:topics');
         $topics = $repository->findBy(array("forumid" => $forumid),array("lastModified" => "DESC"),10,$offset);
-        
-        
         foreach ($topics as $topic)
         {
-
             $topic->replies = $functionsClass->getCountById("posts",array("topicid" => $topic->id)) -1;
             $topic->totalPages = $functionsClass->navigationTotalPages($topic->replies+1);
             $repository = $em->getRepository('classesclassBundle:otakus');
@@ -137,24 +118,20 @@ class DefaultController extends Controller
         if (count($topics) == 0)
         $topics = null;
         $searchByArray = array();
-
-
         $functionsClass->addField($searchByArray,"title","Title");
         $functionsClass->addField($searchByArray,"posts","Posts");
-
         $searchBy = $searchByArray['title'];
         return $this->render('ForumBundle:Default:inforum.html.twig',array("topics" => $topics,"title" => $title,"forumid" => $forumid,"categoryid" => $categoryid,"totalPosts" => $totalPosts,
             "totalTopics" => $totalTopics,"totalPages" => $totalPages,"pagenumber" => $pagenumber,"forum" => $forum,"searchByArray" => $searchByArray,"searchBy" => $searchBy) );
-
     
     }
     public function inforumPostNewTopicAction()
     {
-        $otakusClass = new otakusClass($this);
+        $otakusClass = $this->get("otakuClass");
         if ($otakusClass->isRole("USER"))
         {
             $em = $this->getDoctrine()->getManager();
-            $functionsClass = new functionsClass($this);
+            $functionsClass = $this->get("functionsClass");
             $topics = new topics();
             $functionsClass->copyRequestObject($topics);
             $topics->otakuid = $otakusClass->getId();
@@ -172,7 +149,6 @@ class DefaultController extends Controller
         }
         return "";
     }
-
     public function intopicAction($topicid,$title)
     {
         $request = Request::createFromGlobals();
@@ -180,8 +156,8 @@ class DefaultController extends Controller
         $pagenumber = $request->query->get("pagenumber",1);
         $newpost = false;
         $em = $this->getDoctrine()->getManager();
-        $otakusClass = new otakusClass($this);
-        $functionsClass = new functionsClass($this);
+        $otakusClass = $this->get("otakuClass");
+        $functionsClass = $this->get("functionsClass");
         $totalPosts = $functionsClass->getCountById("posts",array("topicid" => $topicid));
         $totalPages = $functionsClass->navigationTotalPages($totalPosts);
         if ($request->query->get("newpost","") ==  "true")
@@ -209,11 +185,11 @@ class DefaultController extends Controller
     }
     public function intopicNewPostAction(Request $request)
     {
-        $otakusClass = new otakusClass($this);
+        $otakusClass = $this->get("otakuClass");
         if ($otakusClass->isRole("USER"))
         {
             $em = $this->getDoctrine()->getManager();
-            $functionsClass = new functionsClass($this);
+            $functionsClass = $this->get("functionsClass");
             $posts = new posts();
             $functionsClass->copyRequestObject($posts);
             $posts->otakuid = $otakusClass->getId();
