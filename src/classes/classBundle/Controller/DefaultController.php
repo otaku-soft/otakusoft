@@ -3,6 +3,7 @@ namespace classes\classBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+error_reporting(0);
 class DefaultController extends Controller
 {
     public $searchQuery;
